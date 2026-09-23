@@ -4345,7 +4345,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const SECTION_META = [
     {id:"reading",title:"Read Aloud",desc:"Read the passage aloud for 30 seconds. Focus on pronunciation, fluency, pauses, stress, intonation and pace.",time:120,perQuestion:30},
     {id:"repeat",title:"Repeats",desc:"Listen to a sentence and repeat it word-for-word. Avoid changing contractions or rephrasing.",time:300},
-    {id:"build",title:"Sentence Builds",desc:"Rearrange the three phrase groups into a grammatically correct sentence using the given words only.",time:180},
+    {id:"build",title:"Sentence Builds",desc:"Rearrange the three phrase groups mentally and speak the grammatically correct sentence using the given words only.",time:180},
     {id:"conversation",title:"Conversations",desc:"Listen to a conversation and answer the comprehension question in a complete sentence.",time:120},
     {id:"typing",title:"Typing",desc:"Type the displayed passage exactly as shown, including punctuation, in 60 seconds.",time:60,perQuestion:60},
     {id:"completion",title:"Sentence Completion",desc:"Read each sentence and supply the most appropriate word. Each item has 25 seconds.",time:480,perQuestion:25},
@@ -4572,8 +4572,32 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function renderBuild(area,q){
-    const parts=shuffle(q[0]).map(x=>'<span class="phrase">'+escapeHTML(x)+'</span>').join("");
-    makeCard('<div class="question-label">Rearrange the phrase groups into one grammatically correct sentence.</div><div class="phrase-container">'+parts+'</div><input id="answer" class="text-input" placeholder="Type the complete sentence">');
+    // Sentence Build is a speaking task: the phrase groups are heard, not shown.
+    // The browser plays each phrase group separately with a short pause so the
+    // learner must remember the groups, arrange them mentally, and say the full sentence.
+    state.buildAudioParts=shuffle(q[0].slice());
+    makeCard('<div class="question-label">Listen to the phrase groups. The words will NOT be displayed. Remember the groups, arrange them mentally, and then say the complete grammatically correct sentence aloud.</div><div class="audio-card"><div class="audio-icon">🔊</div><div class="audio-title">Listen to the phrase groups</div><div class="audio-note">You will hear the three phrase groups one after another. No written words are shown for this question.</div><button id="playBuild" class="btn">▶ Play Phrase Groups</button><span id="buildAudioStatus" style="margin-left:10px;color:#667085;font-size:13px;"></span></div><div class="audio-card" style="margin-top:18px"><div class="audio-icon">🎙</div><div class="audio-title">Now speak your completed sentence</div><div class="audio-note">Do not type the sentence. Use the microphone to give your spoken response.</div><div class="mic-row"><button id="micStart" class="btn">🎙 Start Speaking</button><button id="micStop" class="btn secondary">Stop</button></div></div><textarea id="answer" class="answer-area" readonly placeholder="Your speech transcript will appear here after speaking..."></textarea><div id="speechFeedback" class="small" style="margin-top:10px"></div>');
+    $("playBuild").addEventListener("click",playBuildAudio);
+    $("micStart").addEventListener("click",startRecognition);
+    $("micStop").addEventListener("click",stopRecognition);
+    setTimeout(playBuildAudio,500);
+  }
+
+  function playBuildAudio(){
+    if(!state.buildAudioParts||!("speechSynthesis" in window))return;
+    window.speechSynthesis.cancel();
+    const parts=state.buildAudioParts.slice();
+    const status=$("buildAudioStatus");
+    let i=0;
+    const speakNext=()=>{
+      if(i>=parts.length){if(status)status.textContent="Finished — now arrange and speak.";return}
+      if(status)status.textContent="Listening to phrase "+(i+1)+" of "+parts.length+"...";
+      const u=new SpeechSynthesisUtterance(parts[i]);
+      u.rate=.88;u.pitch=1;u.volume=1;u.lang="en-US";
+      u.onend=()=>{i++;setTimeout(speakNext,500)};
+      window.speechSynthesis.speak(u);
+    };
+    speakNext();
   }
 
   function renderStory(area,q){
@@ -4616,11 +4640,23 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function renderSummary(area,q){
-    makeCard('<div class="question-label">Read the passage, then complete BOTH responses.</div><div class="passage">'+escapeHTML(q[0])+'</div><div class="question-text" style="margin-top:20px"><strong>1. Author’s opinion (25–50 words)</strong></div><textarea id="summaryInput" class="answer-area" placeholder="Summarize the author’s opinion in 25–50 words..."></textarea><div class="word-counter"><span id="summaryCount">0 words</span><span>Target: 25–50</span></div><div class="question-text" style="margin-top:20px"><strong>2. Your opinion (at least 50 words)</strong></div><textarea id="opinionInput" class="answer-area" placeholder="Give your own opinion with logical reasons..."></textarea><div class="word-counter"><span id="opinionCount">0 words</span><span>Minimum: 50</span></div>');
+    makeCard('<div class="question-label">Read the passage, then complete BOTH responses. The passage will remain visible for 90 seconds and then disappear.</div><div id="summaryPassage" class="passage">'+escapeHTML(q[0])+'</div><div id="summaryStatus" class="memory-message">Passage visible — 90 seconds</div><div class="question-text" style="margin-top:20px"><strong>1. Author’s opinion (25–50 words)</strong></div><textarea id="summaryInput" class="answer-area" placeholder="Summarize the author’s opinion in 25–50 words..."></textarea><div class="word-counter"><span id="summaryCount">0 words</span><span>Target: 25–50</span></div><div class="question-text" style="margin-top:20px"><strong>2. Your opinion (at least 50 words)</strong></div><textarea id="opinionInput" class="answer-area" placeholder="Give your own opinion with logical reasons..."></textarea><div class="word-counter"><span id="opinionCount">0 words</span><span>Minimum: 50</span></div>');
     $("summaryInput").addEventListener("input",()=>$("summaryCount").textContent=words($("summaryInput").value)+" words");
     $("opinionInput").addEventListener("input",()=>$("opinionCount").textContent=words($("opinionInput").value)+" words");
+    clearInterval(state.storyTimer);
+    let left=90;
+    $("summaryStatus").textContent="Passage visible — "+left+" seconds";
+    state.storyTimer=setInterval(()=>{
+      left--;
+      if(left>0){
+        $("summaryStatus").textContent="Passage visible — "+left+" seconds";
+      }else{
+        clearInterval(state.storyTimer);
+        $("summaryPassage").classList.add("hidden-text");
+        $("summaryStatus").textContent="Passage hidden — continue from memory.";
+      }
+    },1000);
   }
-
   function restoreAnswer(){
     const key=state.sectionId+"-"+state.qIndex, saved=state.answers[key];
     if(saved===undefined)return;
