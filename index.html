@@ -2,1627 +2,3360 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>CE Baseline Practice Assessment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CE Baseline Assessment Practice Simulator">
+<title>CE Baseline Assessment Simulator</title>
 
 <style>
-:root{
-  --bg:#f4f7fb;
-  --card:#fff;
-  --text:#172033;
-  --muted:#667085;
-  --primary:#2457d6;
-  --primary-dark:#173e9e;
-  --border:#dfe5ef;
-  --success:#18864b;
-  --warning:#b7791f;
-  --danger:#d64545;
-  --shadow:0 8px 30px rgba(20,35,70,.08);
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
-button,input,textarea{font:inherit}
-button{cursor:pointer}
-.hidden{display:none!important}
+/* ============================================================
+   RESET / BASE
+============================================================ */
 
-.app{min-height:100vh}
-.topbar{
-  height:68px;background:#fff;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;padding:0 28px;
-  position:sticky;top:0;z-index:20
-}
-.brand{font-weight:800;font-size:19px}
-.brand span{color:var(--primary)}
-.top-status{display:flex;gap:18px;align-items:center}
-.timer{
-  background:#eef3ff;color:var(--primary-dark);padding:9px 14px;
-  border-radius:9px;font-weight:800;min-width:105px;text-align:center
-}
-.timer.warning{background:#fff4db;color:var(--warning)}
-.timer.danger{background:#ffe7e7;color:var(--danger)}
-
-.screen{max-width:1150px;margin:0 auto;padding:30px 20px}
-.card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:16px;box-shadow:var(--shadow);padding:28px
-}
-.hero{padding:45px;text-align:center}
-.hero h1{font-size:34px;margin:0 0 12px}
-.hero p{max-width:760px;margin:0 auto 25px;color:var(--muted);line-height:1.7}
-
-.btn{
-  border:0;border-radius:9px;padding:12px 19px;font-weight:700;
-  background:var(--primary);color:#fff;transition:.15s
-}
-.btn:hover{background:var(--primary-dark);transform:translateY(-1px)}
-.btn.secondary{background:#edf2f8;color:#24324a}
-.btn.secondary:hover{background:#e1e8f2}
-.btn.danger{background:var(--danger)}
-.btn.success{background:var(--success)}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:25px 0}
-.info{
-  padding:18px;border:1px solid var(--border);border-radius:12px;background:#fbfcfe
-}
-.info strong{display:block;font-size:21px;margin-bottom:5px}
-.info span{font-size:13px;color:var(--muted)}
-
-.instructions{margin-top:20px}
-.instructions li{margin:10px 0;color:#465268;line-height:1.55}
-
-.section-head{
-  display:flex;justify-content:space-between;gap:20px;align-items:flex-start;
-  margin-bottom:20px
-}
-.section-kicker{
-  font-size:12px;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--primary);font-weight:800;margin-bottom:7px
-}
-.section-title{font-size:25px;margin:0}
-.section-description{color:var(--muted);margin:7px 0 0;line-height:1.5}
-
-.progress-wrap{margin-bottom:25px}
-.progress-label{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:7px}
-.progress{height:8px;background:#e8edf5;border-radius:20px;overflow:hidden}
-.progress div{height:100%;background:var(--primary);transition:.25s}
-
-.question{
-  border:1px solid var(--border);border-radius:14px;padding:24px;
-  margin-bottom:18px;background:#fff
-}
-.question-number{font-size:13px;color:var(--muted);margin-bottom:10px}
-.question-text{font-size:19px;line-height:1.65;margin-bottom:18px}
-.answer-grid{display:grid;gap:10px}
-.option{
-  padding:13px 15px;border:1px solid var(--border);border-radius:9px;
-  background:#fff;text-align:left
-}
-.option:hover{background:#f5f8ff;border-color:#b7c7ef}
-.option.selected{background:#edf3ff;border-color:var(--primary);color:var(--primary-dark);font-weight:700}
-
-textarea,input[type=text]{
-  width:100%;border:1px solid var(--border);border-radius:9px;
-  padding:13px;outline:none;background:#fff
-}
-textarea:focus,input[type=text]:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(36,87,214,.1)}
-textarea{min-height:145px;resize:vertical}
-
-.controls{
-  display:flex;justify-content:space-between;gap:10px;
-  margin-top:25px;padding-top:20px;border-top:1px solid var(--border)
-}
-.control-right{display:flex;gap:10px}
-
-.audio-box{
-  background:#f6f8fc;border:1px solid var(--border);
-  border-radius:12px;padding:20px;margin-bottom:18px
-}
-.audio-box .audio-status{font-weight:700;margin-bottom:12px}
-.speaker-icon{font-size:35px;margin-bottom:8px}
-.listen-note{color:var(--muted);font-size:13px}
-
-.read-passage{
-  font-size:20px;line-height:1.8;padding:22px;
-  background:#f8faff;border-left:4px solid var(--primary);border-radius:8px
-}
-.read-timer{font-size:14px;font-weight:800;color:var(--primary);margin-top:12px}
-
-.word-count{
-  display:flex;justify-content:space-between;font-size:13px;
-  color:var(--muted);margin-top:7px
+* {
+    box-sizing: border-box;
 }
 
-.results-header{text-align:center;padding:20px 0 30px}
-.score-circle{
-  width:150px;height:150px;border-radius:50%;margin:20px auto;
-  display:flex;flex-direction:column;justify-content:center;align-items:center;
-  border:10px solid #e7edfb
-}
-.score-circle strong{font-size:40px;color:var(--primary)}
-.score-circle span{font-size:12px;color:var(--muted)}
-
-.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
-.result-card{
-  border:1px solid var(--border);border-radius:12px;padding:18px
-}
-.result-card h3{font-size:15px;margin:0 0 8px}
-.result-score{font-size:26px;font-weight:800}
-.result-detail{font-size:13px;color:var(--muted);margin-top:5px}
-
-.review-row{
-  padding:16px 0;border-bottom:1px solid var(--border)
-}
-.review-row:last-child{border-bottom:0}
-.badge{
-  display:inline-block;padding:4px 8px;border-radius:20px;font-size:11px;font-weight:800
-}
-.badge.good{background:#e5f6ed;color:var(--success)}
-.badge.mid{background:#fff4db;color:var(--warning)}
-.badge.low{background:#ffe8e8;color:var(--danger)}
-
-.notice{
-  padding:13px 15px;border-radius:9px;background:#fff8e6;
-  border:1px solid #f1dfaa;color:#74551b;font-size:13px;line-height:1.5
+html {
+    scroll-behavior: smooth;
 }
 
-footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
+body {
+    margin: 0;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    background: #f4f7fb;
+    color: #172033;
+    line-height: 1.5;
+}
 
-@media(max-width:800px){
-  .grid,.result-grid{grid-template-columns:1fr}
-  .topbar{padding:0 14px}
-  .hero{padding:28px 20px}
-  .hero h1{font-size:27px}
-  .section-head{flex-direction:column}
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.topbar {
+    height: 68px;
+    background: #ffffff;
+    border-bottom: 1px solid #dfe5ef;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.logo span {
+    color: #2457d6;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-question {
+    color: #667085;
+    font-size: 13px;
+}
+
+.timer {
+    min-width: 100px;
+    text-align: center;
+    padding: 8px 13px;
+    border-radius: 8px;
+    background: #edf3ff;
+    color: #173e9e;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.timer.warning {
+    background: #fff4d9;
+    color: #996515;
+}
+
+.timer.danger {
+    background: #ffe5e5;
+    color: #b42318;
+}
+
+/* ============================================================
+   LAYOUT
+============================================================ */
+
+.container {
+    width: min(1150px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 30px 0 50px;
+}
+
+.card {
+    background: #ffffff;
+    border: 1px solid #dfe5ef;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(20, 35, 70, 0.07);
+    padding: 28px;
+}
+
+/* ============================================================
+   START PAGE
+============================================================ */
+
+.hero {
+    text-align: center;
+    padding: 48px 35px;
+}
+
+.kicker {
+    color: #2457d6;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.hero h1 {
+    margin: 10px 0;
+    font-size: clamp(28px, 5vw, 38px);
+}
+
+.hero-description {
+    max-width: 760px;
+    margin: 0 auto 28px;
+    color: #667085;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.info-card {
+    padding: 19px;
+    background: #fafcff;
+    border: 1px solid #dfe5ef;
+    border-radius: 12px;
+}
+
+.info-card strong {
+    display: block;
+    font-size: 22px;
+    margin-bottom: 3px;
+}
+
+.info-card span {
+    color: #667085;
+    font-size: 13px;
+}
+
+.notice {
+    text-align: left;
+    padding: 14px 16px;
+    border-radius: 9px;
+    background: #fff8e6;
+    border: 1px solid #f0dfa8;
+    color: #735515;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 20px 0;
+}
+
+.instructions {
+    text-align: left;
+    max-width: 800px;
+    margin: 25px auto;
+}
+
+.instructions h3 {
+    margin-bottom: 8px;
+}
+
+.instructions li {
+    margin: 8px 0;
+    color: #465268;
+}
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+
+.btn {
+    border: none;
+    border-radius: 9px;
+    padding: 11px 18px;
+    font-weight: 700;
+    color: white;
+    background: #2457d6;
+    transition: 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+    background: #173e9e;
+    transform: translateY(-1px);
+}
+
+.btn.secondary {
+    background: #edf1f7;
+    color: #26354d;
+}
+
+.btn.secondary:hover:not(:disabled) {
+    background: #dfe6f0;
+}
+
+.btn.danger {
+    background: #d64545;
+}
+
+.btn.success {
+    background: #18864b;
+}
+
+/* ============================================================
+   TEST HEADER
+============================================================ */
+
+.test-header {
+    margin-bottom: 22px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    color: #667085;
+    margin-bottom: 7px;
+}
+
+.progress-track {
+    height: 8px;
+    background: #e7ebf2;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #2457d6;
+    transition: width 0.25s ease;
+}
+
+/* ============================================================
+   SECTION HEADER
+============================================================ */
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.section-title {
+    margin: 3px 0;
+    font-size: 27px;
+}
+
+.section-description {
+    margin: 5px 0 0;
+    color: #667085;
+}
+
+.section-clock {
+    min-width: 80px;
+    text-align: center;
+    padding: 7px 10px;
+    background: #eef6f1;
+    color: #18864b;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* ============================================================
+   QUESTIONS
+============================================================ */
+
+.question-card {
+    border: 1px solid #dfe5ef;
+    border-radius: 13px;
+    padding: 24px;
+    background: #ffffff;
+}
+
+.question-label {
+    font-size: 12px;
+    color: #667085;
+    margin-bottom: 12px;
+}
+
+.question-text {
+    font-size: 19px;
+    line-height: 1.7;
+    margin-bottom: 18px;
+}
+
+.passage {
+    padding: 20px;
+    background: #f7f9fd;
+    border-left: 4px solid #2457d6;
+    border-radius: 7px;
+    line-height: 1.8;
+    font-size: 18px;
+}
+
+.audio-card {
+    padding: 22px;
+    border: 1px solid #dfe5ef;
+    border-radius: 12px;
+    background: #f8faff;
+    margin-bottom: 20px;
+}
+
+.audio-icon {
+    font-size: 32px;
+    margin-bottom: 5px;
+}
+
+.audio-title {
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.audio-note {
+    font-size: 13px;
+    color: #667085;
+    margin-bottom: 14px;
+}
+
+/* ============================================================
+   INPUTS
+============================================================ */
+
+.text-input,
+.answer-area {
+    width: 100%;
+    border: 1px solid #cfd7e5;
+    border-radius: 9px;
+    padding: 13px;
+    outline: none;
+    background: #ffffff;
+}
+
+.text-input:focus,
+.answer-area:focus {
+    border-color: #2457d6;
+    box-shadow: 0 0 0 3px rgba(36, 87, 214, 0.1);
+}
+
+.answer-area {
+    min-height: 145px;
+    resize: vertical;
+}
+
+.word-counter {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 7px;
+    font-size: 12px;
+    color: #667085;
+}
+
+.microphone-controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* ============================================================
+   SENTENCE BUILD
+============================================================ */
+
+.phrase-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 18px 0;
+}
+
+.phrase {
+    padding: 10px 14px;
+    background: #edf3ff;
+    border: 1px solid #cbd8f5;
+    border-radius: 8px;
+    color: #173e9e;
+    font-weight: 700;
+}
+
+/* ============================================================
+   CONTROLS
+============================================================ */
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e3e7ee;
+}
+
+.nav-right {
+    display: flex;
+    gap: 9px;
+}
+
+/* ============================================================
+   RESULTS
+============================================================ */
+
+.results-header {
+    text-align: center;
+    padding: 15px 0 30px;
+}
+
+.results-header h1 {
+    margin-bottom: 5px;
+}
+
+.score-ring {
+    width: 155px;
+    height: 155px;
+    border-radius: 50%;
+    margin: 25px auto;
+    border: 11px solid #e8eefc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-ring strong {
+    font-size: 40px;
+    color: #2457d6;
+}
+
+.score-ring span {
+    color: #667085;
+    font-size: 12px;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.result-card {
+    border: 1px solid #dfe5ef;
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.result-card h3 {
+    margin: 0 0 7px;
+    font-size: 15px;
+}
+
+.result-score {
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.result-meta {
+    color: #667085;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-top: 7px;
+}
+
+.badge.good {
+    background: #e5f6ed;
+    color: #18864b;
+}
+
+.badge.average {
+    background: #fff4d9;
+    color: #996515;
+}
+
+.badge.low {
+    background: #ffe8e8;
+    color: #b42318;
+}
+
+.review-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #e4e8ef;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.review-detail {
+    color: #667085;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* ============================================================
+   PRACTICE MODE
+============================================================ */
+
+.practice-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 25px 0;
+}
+
+.practice-card {
+    padding: 20px;
+    border: 1px solid #dfe5ef;
+    border-radius: 12px;
+    background: #fafcff;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.practice-card:hover {
+    border-color: #2457d6;
+    transform: translateY(-2px);
+}
+
+.practice-card strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.practice-card span {
+    color: #667085;
+    font-size: 12px;
+}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 800px) {
+
+    .topbar {
+        padding: 0 14px;
+    }
+
+    .header-question {
+        display: none;
+    }
+
+    .container {
+        width: min(100% - 20px, 1150px);
+        padding-top: 15px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .hero {
+        padding: 30px 18px;
+    }
+
+    .info-grid,
+    .results-grid,
+    .practice-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-header {
+        flex-direction: column;
+    }
+
+    .navigation {
+        flex-direction: column;
+    }
+
+    .nav-right {
+        justify-content: flex-end;
+    }
+
+    .passage {
+        font-size: 16px;
+    }
+
+    .question-text {
+        font-size: 17px;
+    }
 }
 </style>
 </head>
 
 <body>
-<div class="app">
 
 <header class="topbar">
-  <div class="brand">CE <span>Practice Assessment</span></div>
-  <div class="top-status">
-    <div id="questionProgress" style="font-size:13px;color:#667085"></div>
-    <div id="globalTimer" class="timer hidden">50:00</div>
-  </div>
+
+    <div class="logo">
+        CE <span>Practice Assessment</span>
+    </div>
+
+    <div class="header-right">
+
+        <div id="headerQuestion" class="header-question"></div>
+
+        <div id="globalTimer" class="timer hidden">
+            50:00
+        </div>
+
+    </div>
+
 </header>
+
 
 <main>
 
-<!-- ========================= START SCREEN ========================= -->
-<section id="startScreen" class="screen">
-  <div class="card hero">
-    <div class="section-kicker">Communication Excellence Practice</div>
-    <h1>CE Baseline Assessment Simulator</h1>
-    <p>
-      A browser-based practice environment covering the nine assessment
-      sections described in the supplied CE Baseline Assessment Help Document.
-    </p>
+<!-- ============================================================
+     START SCREEN
+============================================================ -->
 
-    <div class="grid">
-      <div class="info"><strong>50 min</strong><span>Total assessment time</span></div>
-      <div class="info"><strong>9</strong><span>Assessment sections</span></div>
-      <div class="info"><strong>85</strong><span>Total practice items</span></div>
+<section id="startScreen" class="container">
+
+    <div class="card hero">
+
+        <div class="kicker">
+            Communication Excellence
+        </div>
+
+        <h1>
+            CE Baseline Assessment Simulator
+        </h1>
+
+        <p class="hero-description">
+            A browser-based practice environment designed around the
+            structure described in the supplied CE Baseline Assessment
+            Help Document.
+        </p>
+
+        <div class="info-grid">
+
+            <div class="info-card">
+                <strong>50 min</strong>
+                <span>Total assessment time</span>
+            </div>
+
+            <div class="info-card">
+                <strong>9</strong>
+                <span>Assessment sections</span>
+            </div>
+
+            <div class="info-card">
+                <strong>85</strong>
+                <span>Total questions/items</span>
+            </div>
+
+        </div>
+
+        <div class="notice">
+            <strong>Important:</strong>
+            This simulator provides an independent practice evaluation.
+            The supplied document describes the assessment tasks and
+            skills but does not disclose the proprietary numerical
+            scoring formula. Therefore, the scores generated here are
+            practice indicators rather than official assessment scores.
+        </div>
+
+        <div class="instructions">
+
+            <h3>Before starting</h3>
+
+            <ul>
+
+                <li>
+                    Use a desktop or laptop for the closest practice experience.
+                </li>
+
+                <li>
+                    Keep your speakers or headphones available for listening sections.
+                </li>
+
+                <li>
+                    Allow microphone access if you want to use browser speech recognition.
+                </li>
+
+                <li>
+                    The assessment uses browser speech synthesis for generated audio.
+                </li>
+
+                <li>
+                    Do not refresh the page during the assessment.
+                </li>
+
+                <li>
+                    Your results are calculated locally in this browser.
+                </li>
+
+            </ul>
+
+        </div>
+
+        <button id="startFullBtn" class="btn">
+            Start Full Assessment
+        </button>
+
+        <button id="startPracticeBtn" class="btn secondary">
+            Practice Individual Section
+        </button>
+
     </div>
 
-    <div class="notice">
-      This is an independent practice simulator. Its scoring is an
-      approximation based on observable performance; it does not reproduce
-      Deloitte's proprietary scoring algorithm.
-    </div>
-
-    <div class="instructions">
-      <h3>Before you begin</h3>
-      <ul style="text-align:left">
-        <li>Use a desktop/laptop with headphones or speakers.</li>
-        <li>Allow microphone access when the browser asks for it.</li>
-        <li>For listening sections, audio is generated through the browser's speech engine.</li>
-        <li>For speaking sections, browser speech recognition is used where supported.</li>
-        <li>Do not refresh the page during a test.</li>
-        <li>Results are calculated locally in your browser.</li>
-      </ul>
-    </div>
-
-    <button class="btn" onclick="startAssessment()">Start Full Assessment</button>
-    <button class="btn secondary" style="margin-left:8px" onclick="startSectionPractice()">
-      Section Practice
-    </button>
-  </div>
 </section>
 
 
-<!-- ========================= TEST SCREEN ========================= -->
-<section id="testScreen" class="screen hidden">
+<!-- ============================================================
+     PRACTICE MODE SELECTION
+============================================================ -->
 
-  <div class="progress-wrap">
-    <div class="progress-label">
-      <span id="sectionProgressText">Section 1 of 9</span>
-      <span id="itemProgressText">Question 1</span>
+<section id="practiceScreen" class="container hidden">
+
+    <div class="card">
+
+        <div class="kicker">
+            Practice Mode
+        </div>
+
+        <h1>
+            Select a Section
+        </h1>
+
+        <p style="color:#667085;">
+            Practice one assessment section without running the
+            complete assessment.
+        </p>
+
+        <div id="practiceGrid" class="practice-grid"></div>
+
+        <button id="practiceBackBtn" class="btn secondary">
+            Back
+        </button>
+
     </div>
-    <div class="progress"><div id="progressBar" style="width:0%"></div></div>
-  </div>
 
-  <div class="card">
-    <div class="section-head">
-      <div>
-        <div class="section-kicker" id="sectionKicker"></div>
-        <h2 class="section-title" id="sectionTitle"></h2>
-        <p class="section-description" id="sectionDescription"></p>
-      </div>
-      <div id="sectionTime" class="badge good"></div>
-    </div>
-
-    <div id="questionArea"></div>
-
-    <div class="controls">
-      <button id="prevBtn" class="btn secondary" onclick="previousQuestion()">Previous</button>
-      <div class="control-right">
-        <button id="repeatAudioBtn" class="btn secondary hidden" onclick="repeatCurrentAudio()">Replay Audio</button>
-        <button id="nextBtn" class="btn" onclick="nextQuestion()">Next</button>
-      </div>
-    </div>
-  </div>
 </section>
 
 
-<!-- ========================= RESULTS ========================= -->
-<section id="resultsScreen" class="screen hidden">
-  <div class="card">
+<!-- ============================================================
+     TEST SCREEN
+============================================================ -->
 
-    <div class="results-header">
-      <div class="section-kicker">Assessment Complete</div>
-      <h1>Your Practice Results</h1>
+<section id="testScreen" class="container hidden">
 
-      <div class="score-circle">
-        <strong id="overallScore">0%</strong>
-        <span>practice score</span>
-      </div>
+    <div class="test-header">
 
-      <p id="overallMessage" style="color:#667085"></p>
+        <div class="progress-info">
+
+            <span id="progressSection">
+                Section 1 of 9
+            </span>
+
+            <span id="progressQuestion">
+                Question 1
+            </span>
+
+        </div>
+
+        <div class="progress-track">
+            <div id="progressFill" class="progress-fill"></div>
+        </div>
+
     </div>
 
-    <h2>Section Performance</h2>
-    <div id="resultGrid" class="result-grid"></div>
 
-    <h2 style="margin-top:30px">Performance Analysis</h2>
-    <div id="analysisBox" class="notice"></div>
+    <div class="card">
 
-    <h2 style="margin-top:30px">Question Review</h2>
-    <div id="reviewBox"></div>
+        <div class="section-header">
 
-    <div style="margin-top:25px;display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn" onclick="location.reload()">Start New Test</button>
-      <button class="btn secondary" onclick="downloadResults()">Download Results</button>
+            <div>
+
+                <div id="sectionKicker" class="kicker">
+                    Part A
+                </div>
+
+                <h2 id="sectionTitle" class="section-title">
+                    Read Aloud
+                </h2>
+
+                <p id="sectionDescription" class="section-description"></p>
+
+            </div>
+
+            <div id="sectionClock" class="section-clock">
+                02:00
+            </div>
+
+        </div>
+
+
+        <div id="questionArea"></div>
+
+
+        <div class="navigation">
+
+            <button id="previousBtn" class="btn secondary">
+                Previous
+            </button>
+
+            <div class="nav-right">
+
+                <button id="replayBtn" class="btn secondary hidden">
+                    Replay Audio
+                </button>
+
+                <button id="nextBtn" class="btn">
+                    Next
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
 
-  </div>
-
-  <footer>
-    CE Practice Assessment — independent training simulator
-  </footer>
 </section>
 
 
-<!-- ========================= SECTION PRACTICE ========================= -->
-<section id="practiceScreen" class="screen hidden">
-  <div class="card">
-    <div class="section-kicker">Practice Mode</div>
-    <h1>Select a Section</h1>
-    <p style="color:#667085">
-      Practice individual sections without running the complete assessment.
-    </p>
+<!-- ============================================================
+     RESULTS SCREEN
+============================================================ -->
 
-    <div id="practiceSections" class="grid"></div>
+<section id="resultsScreen" class="container hidden">
 
-    <button class="btn secondary" onclick="location.reload()">Back</button>
-  </div>
+    <div class="card">
+
+        <div class="results-header">
+
+            <div class="kicker">
+                Assessment Complete
+            </div>
+
+            <h1>
+                Practice Results
+            </h1>
+
+            <div class="score-ring">
+
+                <strong id="overallScore">
+                    0%
+                </strong>
+
+                <span>
+                    practice score
+                </span>
+
+            </div>
+
+            <p id="resultMessage" style="color:#667085;"></p>
+
+        </div>
+
+
+        <h2>
+            Section Performance
+        </h2>
+
+        <div id="resultsGrid" class="results-grid"></div>
+
+
+        <h2 style="margin-top:32px;">
+            Performance Analysis
+        </h2>
+
+        <div id="analysis" class="notice"></div>
+
+
+        <h2 style="margin-top:32px;">
+            Question Review
+        </h2>
+
+        <div id="reviewList"></div>
+
+
+        <div style="margin-top:25px;display:flex;gap:10px;flex-wrap:wrap;">
+
+            <button id="restartBtn" class="btn">
+                Start New Assessment
+            </button>
+
+            <button id="downloadBtn" class="btn secondary">
+                Download Results
+            </button>
+
+        </div>
+
+    </div>
+
 </section>
 
 </main>
-</div>
 
 
 <script>
+"use strict";
+
 /* ================================================================
-   CE BASELINE PRACTICE ASSESSMENT
-   Single-file implementation: HTML + CSS + JavaScript
-   ================================================================ */
+   DATA
+================================================================ */
 
+const SECTIONS = [
 
-/* ========================= QUESTION DATA ========================= */
+    {
+        id: "A",
+        title: "Read Aloud",
+        shortTitle: "Speaking / Reading",
+        type: "read",
+        sectionTime: 120,
+        questionTime: 30,
+        description:
+            "Read the passage aloud clearly and naturally. Focus on pronunciation, fluency, pauses, stress, intonation and appropriate pace.",
+        questions: [
 
-const sections = [
+            "Australia is a very large country. It is the sixth largest country in the world. It is also a continent and is sometimes called the island continent. It is surrounded by two oceans. Most of Australia is a desert so it is very flat and dry, but it also has rain forests and mountains. It is home to many different kinds of animals.",
 
-{
- id:"A",
- title:"Read Aloud",
- short:"Speaking / Reading",
- time:120,
- questions:2,
- description:"Read each passage aloud clearly and naturally. Accuracy, fluency, pronunciation, pacing and intonation are relevant.",
- type:"read",
- data:[
-  `Australia is a very large country. It is the sixth largest country in the world. It is also a continent and is sometimes called the island continent. It is surrounded by two oceans. Most of Australia is a desert so it is very flat and dry, but it also has rain forests and mountains. It is home to many different kinds of animals.`,
-  `Modern workplaces depend on clear communication. Employees need to understand instructions, explain ideas and listen carefully to colleagues. Good communication is not only about speaking quickly. It also involves appropriate pauses, accurate pronunciation, suitable stress and a natural pace.`
- ]
-},
+            "Modern workplaces depend on clear communication. Employees need to understand instructions, explain ideas and listen carefully to colleagues. Good communication is not only about speaking quickly. It also involves appropriate pauses, accurate pronunciation, suitable stress and a natural pace."
 
-{
- id:"B",
- title:"Repeats",
- short:"Speaking",
- time:300,
- questions:16,
- description:"Listen to each sentence and repeat it word-for-word. Do not paraphrase or change contractions.",
- type:"repeat",
- data:[
-  "He's a great teacher.",
-  "It's not too late to change your mind.",
-  "The meeting starts at nine o'clock tomorrow.",
-  "Please send the updated report before lunch.",
-  "Our manager reviewed the monthly figures yesterday.",
-  "The client asked us to explain the difference.",
-  "She usually checks the payment details twice.",
-  "We need to finish this assignment before Friday.",
-  "The finance team prepared the documents for the meeting.",
-  "He said that the project would begin after approval.",
-  "The company received the updated financial report yesterday.",
-  "The manager reviewed the monthly figures before submitting the report.",
-  "Please remember to attach the supporting documents to the email.",
-  "Although the deadline was approaching, the team remained calm.",
-  "The employee explained that he had already completed the required training.",
-  "If the figures are correct, we can finalize the report and submit it this afternoon."
- ]
-},
+        ]
+    },
 
-{
- id:"C",
- title:"Sentence Builds",
- short:"Speaking",
- time:180,
- questions:10,
- description:"Listen to three short phrases and rearrange them into a grammatically correct sentence using the given words.",
- type:"build",
- data:[
-  {parts:["my boss","to London","moved"],answer:"My boss moved to London."},
-  {parts:["of your family","any pictures","do you have"],answer:"Do you have any pictures of your family?"},
-  {parts:["to their leader","listened carefully","the young men"],answer:"The young men listened carefully to their leader."},
-  {parts:["the report","before lunch","she completed"],answer:"She completed the report before lunch."},
-  {parts:["the monthly figures","reviewed","the finance manager"],answer:"The finance manager reviewed the monthly figures."},
-  {parts:["at the bank","yesterday","he met the client"],answer:"He met the client at the bank yesterday."},
-  {parts:["the documents","please send","before five"],answer:"Please send the documents before five."},
-  {parts:["has improved","since last year","his communication"],answer:"His communication has improved since last year."},
-  {parts:["carefully","the instructions","the employees followed"],answer:"The employees followed the instructions carefully."},
-  {parts:["after the meeting","will call you","I"],answer:"I will call you after the meeting."}
- ]
-},
+    {
+        id: "B",
+        title: "Repeats",
+        shortTitle: "Speaking",
+        type: "repeat",
+        sectionTime: 300,
+        questionTime: null,
+        description:
+            "Listen to a sentence and repeat it word-for-word. Avoid changing contractions or rephrasing the sentence.",
+        questions: [
 
-{
- id:"D",
- title:"Conversations",
- short:"Listening",
- time:120,
- questions:12,
- description:"Listen to a short conversation and answer the comprehension question.",
- type:"conversation",
- data:[
-  {dialogue:"Speaker 1: Congratulations on graduating! Speaker 2: Thanks! It was a lot of work. Speaker 1: I know. You deserve a party.",
-   q:"Why does the man deserve a party?",a:"Because he graduated."},
-  {dialogue:"Speaker 1: Did you finish the report? Speaker 2: Almost. I just need to check the final figures.",
-   q:"What does the woman still need to do?",a:"She needs to check the final figures."},
-  {dialogue:"Speaker 1: Are you taking the train today? Speaker 2: No, I decided to drive because it is raining.",
-   q:"Why did the man decide to drive?",a:"Because it is raining."},
-  {dialogue:"Speaker 1: Can we meet at three? Speaker 2: I have another meeting then. How about four?",
-   q:"What time does the woman suggest?",a:"Four o'clock."},
-  {dialogue:"Speaker 1: Where is Ravi? Speaker 2: He went to the bank to deposit the payment.",
-   q:"Where did Ravi go?",a:"He went to the bank."},
-  {dialogue:"Speaker 1: Have you sent the invoice? Speaker 2: Yes, I sent it this morning.",
-   q:"When was the invoice sent?",a:"This morning."},
-  {dialogue:"Speaker 1: Why are you leaving early? Speaker 2: I have an appointment at five.",
-   q:"Why is the man leaving early?",a:"Because he has an appointment at five."},
-  {dialogue:"Speaker 1: Did the client approve the proposal? Speaker 2: Not yet. They asked for a few changes.",
-   q:"What did the client ask for?",a:"A few changes."},
-  {dialogue:"Speaker 1: Could you print these documents? Speaker 2: Sure. How many copies?",
-   q:"What does the second speaker want to know?",a:"How many copies are needed."},
-  {dialogue:"Speaker 1: Are we meeting in the conference room? Speaker 2: No, it has been booked. We will use Room 204.",
-   q:"Where will the meeting take place?",a:"Room 204."},
-  {dialogue:"Speaker 1: Did you receive the salary statement? Speaker 2: Yes, it arrived by email yesterday.",
-   q:"How did the salary statement arrive?",a:"By email."},
-  {dialogue:"Speaker 1: Can you join us for lunch? Speaker 2: I would like to, but I have a presentation at one.",
-   q:"Why can't the second speaker join lunch?",a:"Because he/she has a presentation at one."}
- ]
-},
+            "He's a great teacher.",
+            "It's not too late to change your mind.",
+            "The meeting starts at nine o'clock tomorrow.",
+            "Please send the updated report before lunch.",
+            "Our manager reviewed the monthly figures yesterday.",
+            "The client asked us to explain the difference.",
+            "She usually checks the payment details twice.",
+            "We need to finish this assignment before Friday.",
+            "The finance team prepared the documents for the meeting.",
+            "He said that the project would begin after approval.",
+            "The company received the updated financial report yesterday.",
+            "The manager reviewed the monthly figures before submitting the report.",
+            "Please remember to attach the supporting documents to the email.",
+            "Although the deadline was approaching, the team remained calm.",
+            "The employee explained that he had already completed the required training.",
+            "If the figures are correct, we can finalize the report and submit it this afternoon."
 
-{
- id:"E",
- title:"Typing",
- short:"Typing",
- time:60,
- questions:1,
- description:"Type the displayed passage as accurately and quickly as possible. Include punctuation.",
- type:"typing",
- data:[
-  `Many people do not like public speaking. They are afraid to speak in front of a large group of people. There are many ways to get better at public speaking. First, it is good to know the room. You should know where to stand and where to set up your computer.`
- ]
-},
+        ]
+    },
 
-{
- id:"F",
- title:"Sentence Completion",
- short:"Reading / Grammar",
- time:480,
- questions:20,
- description:"Read each sentence and supply the most appropriate word.",
- type:"completion",
- data:[
-  {s:"Her favorite hobby is ____. She has so many books.",a:"reading"},
-  {s:"He arrives ____ is often the first one here.",a:"early"},
-  {s:"I asked a coworker to take over my ____ because I wasn't feeling well.",a:"shift"},
-  {s:"The manager ____ the report yesterday.",a:"reviewed"},
-  {s:"Please ____ the document before sending it.",a:"check"},
-  {s:"The employees ____ working when the manager arrived.",a:"were"},
-  {s:"She is responsible ____ preparing the monthly report.",a:"for"},
-  {s:"We have been waiting ____ two hours.",a:"for"},
-  {s:"The client asked us ____ explain the difference.",a:"to"},
-  {s:"If the figures are correct, we ____ submit the report today.",a:"can"},
-  {s:"He ____ already completed the training.",a:"has"},
-  {s:"The meeting was postponed ____ the manager was unavailable.",a:"because"},
-  {s:"Please make sure that all information is ____.",a:"accurate"},
-  {s:"The company received the payment ____ Monday.",a:"on"},
-  {s:"She spoke ____ during the presentation.",a:"clearly"},
-  {s:"Neither the manager nor the employees ____ available.",a:"were"},
-  {s:"The report needs to be submitted ____ Friday.",a:"before"},
-  {s:"We should discuss the issue ____ the meeting.",a:"during"},
-  {s:"He was absent ____ he was unwell.",a:"because"},
-  {s:"The finance team is responsible for ____ the accounts.",a:"maintaining"}
- ]
-},
+    {
+        id: "C",
+        title: "Sentence Builds",
+        shortTitle: "Speaking",
+        type: "build",
+        sectionTime: 180,
+        questionTime: null,
+        description:
+            "Rearrange the three phrases into a grammatically correct sentence. Use the given words without additions or conversions.",
+        questions: [
 
-{
- id:"G",
- title:"Dictation",
- short:"Listening / Typing",
- time:420,
- questions:16,
- description:"Listen to a sentence and type what you hear. Focus on wording, spelling and punctuation.",
- type:"dictation",
- data:[
-  "I'll see you on Thursday.",
-  "How long can I keep this book?",
-  "She apologized to all her friends several times.",
-  "The meeting will start at ten o'clock.",
-  "Please send the report before the end of the day.",
-  "The company received the updated financial report yesterday.",
-  "We will discuss the project after lunch.",
-  "The finance manager reviewed the monthly figures.",
-  "Please remember to attach the document to the email.",
-  "The client called us this morning about the payment.",
-  "I have already completed the required training.",
-  "The employees were asked to submit their forms.",
-  "Although the deadline was close, the team remained calm.",
-  "The manager said that the meeting had been postponed.",
-  "We need to verify the figures before submitting the final report.",
-  "If everything is correct, we can complete the process this afternoon."
- ]
-},
+            {
+                parts: ["my boss", "to London", "moved"],
+                answer: "My boss moved to London."
+            },
 
-{
- id:"H",
- title:"Passage Reconstruction",
- short:"Reading / Writing",
- time:360,
- questions:3,
- description:"Read a short passage for a limited time, remember the main points, then reconstruct it in your own words.",
- type:"reconstruction",
- data:[
-  {
-   passage:"Robert went to a nice restaurant for dinner. When the waiter brought the bill, Robert reached for his wallet, but it wasn't in his pocket. He remembered having his wallet when he came into the restaurant. The waiter looked around the floor near his table. He found the wallet under the table.",
-   keywords:["Robert","restaurant","dinner","waiter","bill","wallet","pocket","table"]
-  },
-  {
-   passage:"A company decided to introduce a new payment system to reduce processing time. The finance team tested the system for two weeks before implementation. During testing, employees identified a few errors and reported them to the technical team. The issues were corrected before the system was launched.",
-   keywords:["company","payment","system","finance","testing","employees","errors","corrected","launched"]
-  },
-  {
-   passage:"Maya prepared for an important presentation by reviewing the data and practicing her explanation several times. On the morning of the presentation, she checked the equipment and arrived early. The presentation went smoothly because she had prepared carefully and understood the subject.",
-   keywords:["Maya","presentation","data","practicing","equipment","early","smoothly","prepared"]
-  }
- ]
-},
+            {
+                parts: ["of your family", "any pictures", "do you have"],
+                answer: "Do you have any pictures of your family?"
+            },
 
-{
- id:"I",
- title:"Summary & Opinion",
- short:"Reading / Writing",
- time:1080,
- questions:1,
- description:"Read the passage, summarize the author's opinion in 25–50 words, and provide your own opinion in at least 50 words.",
- type:"summary",
- data:[
-  {
-   passage:`Some employees prefer working from an office because they find it easier to communicate with colleagues and separate their professional and personal lives. Others prefer working remotely because it saves commuting time and can provide greater flexibility. The author argues that neither arrangement is suitable for every employee. Organizations should consider the nature of the work, communication requirements and individual circumstances when deciding how employees should work. A flexible approach can allow companies to maintain productivity while also supporting different employee needs.`,
-   keywords:["office","remote","flexibility","communication","productivity","employees","work","commuting"]
-  }
- ]
-}
+            {
+                parts: ["to their leader", "listened carefully", "the young men"],
+                answer: "The young men listened carefully to their leader."
+            },
+
+            {
+                parts: ["the report", "before lunch", "she completed"],
+                answer: "She completed the report before lunch."
+            },
+
+            {
+                parts: ["the monthly figures", "reviewed", "the finance manager"],
+                answer: "The finance manager reviewed the monthly figures."
+            },
+
+            {
+                parts: ["at the bank", "yesterday", "he met the client"],
+                answer: "He met the client at the bank yesterday."
+            },
+
+            {
+                parts: ["the documents", "please send", "before five"],
+                answer: "Please send the documents before five."
+            },
+
+            {
+                parts: ["has improved", "since last year", "his communication"],
+                answer: "His communication has improved since last year."
+            },
+
+            {
+                parts: ["carefully", "the instructions", "the employees followed"],
+                answer: "The employees followed the instructions carefully."
+            },
+
+            {
+                parts: ["after the meeting", "will call you", "I"],
+                answer: "I will call you after the meeting."
+            }
+
+        ]
+    },
+
+    {
+        id: "D",
+        title: "Conversations",
+        shortTitle: "Listening",
+        type: "conversation",
+        sectionTime: 120,
+        questionTime: null,
+        description:
+            "Listen to a conversation and answer the comprehension question. Focus on the message, tone and relevant information.",
+        questions: [
+
+            {
+                dialogue:
+                    "Speaker 1: Congratulations on graduating! Speaker 2: Thanks! It was a lot of work. Speaker 1: I know. You deserve a party.",
+                question: "Why does the man deserve a party?",
+                answer: "Because he graduated."
+            },
+
+            {
+                dialogue:
+                    "Speaker 1: Did you finish the report? Speaker 2: Almost. I just need to check the final figures.",
+                question: "What does the woman still need to do?",
+                answer: "She needs to check the final figures."
+            },
+
+            {
+                dialogue:
+                    "Speaker 1: Are you taking the train today? Speaker 2: No, I decided to drive because it is raining.",
+                question: "Why did the man decide to drive?",
+                answer: "Because it is raining."
+            },
+
+            {
+                dialogue:
+                    "Speaker 1: Can we meet at three? Speaker 2: I have another meeting then. How about four?",
+                question: "What time does the woman suggest?",
+                answer: "Four o'clock."
+            },
+
+            {
+                dialogue:
+                    "Speaker 1: Where is Ravi? Speaker 2: He went to the bank to deposit the payment.",
+                question: "Where did Ravi go?",
+                answer: "He went to the bank."
+            },
+
+            {
+                dialogue:
+                    "Speaker 1: Have you sent the invoice? Speaker 2: Yes, I sent it this morning.",
+                question: "When was the invoice sent?",
+                answer: "This morning."
+            },
+
+            {
+                dialogue:
+                    "Speaker 1: Why are you leaving early? Speaker 2: I have an appointment at five.",
+                question: "Why is the man leaving early?",
+                answer: "Because he has an appointment at five."
+            },
+
+            {
+                dialogue:
+                    "Speaker 1: Did the client approve the proposal? Speaker 2: Not yet. They asked for a few changes.",
+                question: "What did the client ask for?",
+                answer: "A few changes."
+            },
+
+            {
+                dialogue:
+                    "Speaker 1: Could you print these documents? Speaker 2: Sure. How many copies?",
+                question: "What does the second speaker want to know?",
+                answer: "How many copies are needed."
+            },
+
+            {
+                dialogue:
+                    "Speaker 1: Are we meeting in the conference room? Speaker 2: No, it has been booked. We will use Room 204.",
+                question: "Where will the meeting take place?",
+                answer: "Room 204."
+            },
+
+            {
+                dialogue:
+                    "Speaker 1: Did you receive the salary statement? Speaker 2: Yes, it arrived by email yesterday.",
+                question: "How did the salary statement arrive?",
+                answer: "By email."
+            },
+
+            {
+                dialogue:
+                    "Speaker 1: Can you join us for lunch? Speaker 2: I would like to, but I have a presentation at one.",
+                question: "Why can't the second speaker join lunch?",
+                answer: "Because he has a presentation at one."
+            }
+
+        ]
+    },
+
+    {
+        id: "E",
+        title: "Typing",
+        shortTitle: "Typing",
+        type: "typing",
+        sectionTime: 60,
+        questionTime: 60,
+        description:
+            "Type the displayed passage exactly as shown, including punctuation. This section measures typing speed and accuracy.",
+        questions: [
+
+            "Many people do not like public speaking. They are afraid to speak in front of a large group of people. There are many ways to get better at public speaking. First, it is good to know the room. You should know where to stand and where to set up your computer."
+
+        ]
+    },
+
+    {
+        id: "F",
+        title: "Sentence Completion",
+        shortTitle: "Reading",
+        type: "completion",
+        sectionTime: 480,
+        questionTime: 25,
+        description:
+            "Read each sentence and supply the most appropriate word. Consider context, word order and grammar.",
+        questions: [
+
+            { sentence: "Her favorite hobby is ____. She has so many books.", answer: "reading" },
+            { sentence: "He arrives ____ and is often the first one here.", answer: "early" },
+            { sentence: "I asked a coworker to take over my ____ because I wasn't feeling well.", answer: "shift" },
+            { sentence: "The manager ____ the report yesterday.", answer: "reviewed" },
+            { sentence: "Please ____ the document before sending it.", answer: "check" },
+            { sentence: "The employees ____ working when the manager arrived.", answer: "were" },
+            { sentence: "She is responsible ____ preparing the monthly report.", answer: "for" },
+            { sentence: "We have been waiting ____ two hours.", answer: "for" },
+            { sentence: "The client asked us ____ explain the difference.", answer: "to" },
+            { sentence: "If the figures are correct, we ____ submit the report today.", answer: "can" },
+            { sentence: "He ____ already completed the training.", answer: "has" },
+            { sentence: "The meeting was postponed ____ the manager was unavailable.", answer: "because" },
+            { sentence: "Please make sure that all information is ____.", answer: "accurate" },
+            { sentence: "The company received the payment ____ Monday.", answer: "on" },
+            { sentence: "She spoke ____ during the presentation.", answer: "clearly" },
+            { sentence: "Neither the manager nor the employees ____ available.", answer: "were" },
+            { sentence: "The report needs to be submitted ____ Friday.", answer: "before" },
+            { sentence: "We should discuss the issue ____ the meeting.", answer: "during" },
+            { sentence: "He was absent ____ he was unwell.", answer: "because" },
+            { sentence: "The finance team is responsible for ____ the accounts.", answer: "maintaining" }
+
+        ]
+    },
+
+    {
+        id: "G",
+        title: "Dictation",
+        shortTitle: "Listening / Typing",
+        type: "dictation",
+        sectionTime: 420,
+        questionTime: 25,
+        description:
+            "Listen to a sentence and type the sentence exactly as heard. Pay attention to wording, spelling and punctuation.",
+        questions: [
+
+            "I'll see you on Thursday.",
+            "How long can I keep this book?",
+            "She apologized to all her friends several times.",
+            "The meeting will start at ten o'clock.",
+            "Please send the report before the end of the day.",
+            "The company received the updated financial report yesterday.",
+            "We will discuss the project after lunch.",
+            "The finance manager reviewed the monthly figures.",
+            "Please remember to attach the document to the email.",
+            "The client called us this morning about the payment.",
+            "I have already completed the required training.",
+            "The employees were asked to submit their forms.",
+            "Although the deadline was close, the team remained calm.",
+            "The manager said that the meeting had been postponed.",
+            "We need to verify the figures before submitting the final report.",
+            "If everything is correct, we can complete the process this afternoon."
+
+        ]
+    },
+
+    {
+        id: "H",
+        title: "Passage Reconstruction",
+        shortTitle: "Reading / Writing",
+        type: "reconstruction",
+        sectionTime: 360,
+        questionTime: 120,
+        description:
+            "Read the paragraph for 30 seconds. It then disappears. Reconstruct the main points and as many details as possible in your own words.",
+        questions: [
+
+            {
+                passage:
+                    "Robert went to a nice restaurant for dinner. When the waiter brought the bill, Robert reached for his wallet, but it wasn't in his pocket. He remembered having his wallet when he came into the restaurant. The waiter looked around the floor near his table. He found the wallet under the table.",
+                keywords:
+                    ["Robert", "restaurant", "dinner", "waiter", "bill", "wallet", "pocket", "table"]
+            },
+
+            {
+                passage:
+                    "A company decided to introduce a new payment system to reduce processing time. The finance team tested the system for two weeks before implementation. During testing, employees identified a few errors and reported them to the technical team. The issues were corrected before the system was launched.",
+                keywords:
+                    ["company", "payment", "system", "finance", "tested", "employees", "errors", "corrected", "launched"]
+            },
+
+            {
+                passage:
+                    "Maya prepared for an important presentation by reviewing the data and practicing her explanation several times. On the morning of the presentation, she checked the equipment and arrived early. The presentation went smoothly because she had prepared carefully and understood the subject.",
+                keywords:
+                    ["Maya", "presentation", "data", "practicing", "equipment", "early", "smoothly", "prepared", "subject"]
+            }
+
+        ]
+    },
+
+    {
+        id: "I",
+        title: "Summary and Opinion",
+        shortTitle: "Reading / Writing",
+        type: "summary",
+        sectionTime: 1080,
+        questionTime: null,
+        description:
+            "Read the passage and write the author's opinion in 25–50 words. Then give your own opinion in at least 50 words with logical reasons.",
+        questions: [
+
+            {
+                passage:
+                    "Some employees prefer working from an office because they find it easier to communicate with colleagues and separate their professional and personal lives. Others prefer working remotely because it saves commuting time and can provide greater flexibility. The author argues that neither arrangement is suitable for every employee. Organizations should consider the nature of the work, communication requirements and individual circumstances when deciding how employees should work. A flexible approach can allow companies to maintain productivity while also supporting different employee needs.",
+
+                keywords:
+                    ["office", "remote", "flexibility", "communication", "productivity", "employees", "work", "commuting"]
+            }
+
+        ]
+    }
 
 ];
 
 
-/* ========================= APPLICATION STATE ========================= */
+/* ================================================================
+   STATE
+================================================================ */
 
-let state={
-  mode:"full",
-  sectionIndex:0,
-  questionIndex:0,
-  answers:{},
-  results:[],
-  startTime:null,
-  globalSeconds:3000,
-  sectionSeconds:0,
-  currentAudioText:"",
-  speechRecognition:null,
-  recognitionActive:false
+const state = {
+    mode: "full",
+    sectionIndex: 0,
+    questionIndex: 0,
+    answers: {},
+    questionResults: [],
+    sectionResults: [],
+    globalSeconds: 3000,
+    questionSeconds: 0,
+    sectionSeconds: 0,
+    currentAudio: "",
+    recognition: null,
+    recognitionRunning: false,
+    memoryTimer: null,
+    globalTimer: null,
+    questionTimer: null,
+    sectionTimer: null,
+    testStartTime: null
 };
 
-let globalInterval=null;
-let sectionInterval=null;
 
+/* ================================================================
+   DOM HELPERS
+================================================================ */
 
-/* ========================= START ========================= */
+const $ = (id) => document.getElementById(id);
 
-function startAssessment(){
-  state.mode="full";
-  state.sectionIndex=0;
-  state.questionIndex=0;
-  state.answers={};
-  state.results=[];
-  state.startTime=Date.now();
-  state.globalSeconds=3000;
-
-  document.getElementById("startScreen").classList.add("hidden");
-  document.getElementById("testScreen").classList.remove("hidden");
-  document.getElementById("globalTimer").classList.remove("hidden");
-
-  startGlobalTimer();
-  renderQuestion();
+function show(id) {
+    $(id).classList.remove("hidden");
 }
 
-function startSectionPractice(){
-  document.getElementById("startScreen").classList.add("hidden");
-  document.getElementById("practiceScreen").classList.remove("hidden");
-
-  const container=document.getElementById("practiceSections");
-  container.innerHTML="";
-
-  sections.forEach((s,i)=>{
-    const card=document.createElement("div");
-    card.className="info";
-    card.style.cursor="pointer";
-    card.innerHTML=`
-      <strong>${s.id}. ${s.title}</strong>
-      <span>${s.questions} question${s.questions>1?"s":""} · ${formatSeconds(s.time)}</span>
-    `;
-    card.onclick=()=>startSingleSection(i);
-    container.appendChild(card);
-  });
-}
-
-function startSingleSection(index){
-  state.mode="section";
-  state.sectionIndex=index;
-  state.questionIndex=0;
-  state.answers={};
-  state.results=[];
-  state.startTime=Date.now();
-
-  document.getElementById("practiceScreen").classList.add("hidden");
-  document.getElementById("testScreen").classList.remove("hidden");
-  document.getElementById("globalTimer").classList.add("hidden");
-
-  renderQuestion();
+function hide(id) {
+    $(id).classList.add("hidden");
 }
 
 
-/* ========================= TIMERS ========================= */
+/* ================================================================
+   BASIC UTILITIES
+=============================================================================== */
 
-function startGlobalTimer(){
-  clearInterval(globalInterval);
+function formatTime(seconds) {
 
-  globalInterval=setInterval(()=>{
-    state.globalSeconds--;
+    seconds = Math.max(0, Math.floor(seconds));
 
-    const el=document.getElementById("globalTimer");
-    el.textContent=formatSeconds(state.globalSeconds);
+    const minutes = Math.floor(seconds / 60)
+        .toString()
+        .padStart(2, "0");
 
-    el.classList.toggle("warning",state.globalSeconds<=600 && state.globalSeconds>180);
-    el.classList.toggle("danger",state.globalSeconds<=180);
+    const remaining = (seconds % 60)
+        .toString()
+        .padStart(2, "0");
 
-    if(state.globalSeconds<=0){
-      clearInterval(globalInterval);
-      finishAssessment(true);
+    return `${minutes}:${remaining}`;
+}
+
+
+function wordCount(text) {
+
+    if (!text || !text.trim()) {
+        return 0;
     }
-  },1000);
+
+    return text.trim().split(/\s+/).length;
 }
 
-function startSectionTimer(seconds){
-  clearInterval(sectionInterval);
-  state.sectionSeconds=seconds;
 
-  updateSectionTimer();
+function normalize(text) {
 
-  sectionInterval=setInterval(()=>{
-    state.sectionSeconds--;
-    updateSectionTimer();
+    return String(text || "")
+        .toLowerCase()
+        .replace(/[’‘]/g, "'")
+        .replace(/[“”]/g, '"')
+        .replace(/[.,!?;:()[\]{}]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
 
-    if(state.sectionSeconds<=0){
-      clearInterval(sectionInterval);
-      nextQuestion(true);
+
+/*
+ * Longest Common Subsequence based word similarity.
+ * Used only as a transparent practice metric.
+ */
+
+function similarity(a, b) {
+
+    const first = normalize(a).split(" ").filter(Boolean);
+    const second = normalize(b).split(" ").filter(Boolean);
+
+    if (first.length === 0 && second.length === 0) {
+        return 1;
     }
-  },1000);
-}
 
-function updateSectionTimer(){
-  const el=document.getElementById("sectionTime");
-  el.textContent=formatSeconds(state.sectionSeconds);
+    if (first.length === 0 || second.length === 0) {
+        return 0;
+    }
 
-  el.classList.remove("good","mid","low");
-
-  if(state.sectionSeconds<=30)el.classList.add("low");
-  else if(state.sectionSeconds<=90)el.classList.add("mid");
-  else el.classList.add("good");
-}
-
-function formatSeconds(s){
-  s=Math.max(0,s);
-  const m=Math.floor(s/60).toString().padStart(2,"0");
-  const sec=(s%60).toString().padStart(2,"0");
-  return `${m}:${sec}`;
-}
-
-
-/* ========================= RENDER QUESTION ========================= */
-
-function renderQuestion(){
-  const section=sections[state.sectionIndex];
-  const q=section.data[state.questionIndex];
-
-  document.getElementById("sectionKicker").textContent=
-    `Part ${section.id} · ${section.short}`;
-
-  document.getElementById("sectionTitle").textContent=section.title;
-  document.getElementById("sectionDescription").textContent=section.description;
-
-  document.getElementById("sectionProgressText").textContent=
-    state.mode==="full"
-    ? `Section ${state.sectionIndex+1} of ${sections.length}`
-    : `Section Practice`;
-
-  document.getElementById("itemProgressText").textContent=
-    `Question ${state.questionIndex+1} of ${section.questions}`;
-
-  const totalQuestions=sections.reduce((a,s)=>a+s.questions,0);
-  let completedBefore=0;
-
-  for(let i=0;i<state.sectionIndex;i++)completedBefore+=sections[i].questions;
-
-  const completed=completedBefore+state.questionIndex;
-  document.getElementById("progressBar").style.width=
-    `${Math.min(100,(completed/totalQuestions)*100)}%`;
-
-  document.getElementById("prevBtn").disabled=
-    state.sectionIndex===0 && state.questionIndex===0;
-
-  document.getElementById("nextBtn").textContent=
-    state.questionIndex===section.questions-1
-    ? (state.mode==="full" && state.sectionIndex===sections.length-1 ? "Finish" : "Next Section")
-    : "Next";
-
-  const repeatBtn=document.getElementById("repeatAudioBtn");
-  repeatBtn.classList.toggle(
-    "hidden",
-    !["repeat","conversation","dictation"].includes(section.type)
-  );
-
-  renderByType(section,q);
-
-  /*
-    Each section gets its supplied overall section time.
-    In a production assessment, this can be changed to per-item timers.
-  */
-  startSectionTimer(section.time);
-}
-
-
-/* ========================= QUESTION TYPES ========================= */
-
-function renderByType(section,q){
-
-  const area=document.getElementById("questionArea");
-  area.innerHTML="";
-
-  if(section.type==="read"){
-    renderRead(area,q);
-  }
-
-  if(section.type==="repeat"){
-    renderRepeat(area,q);
-  }
-
-  if(section.type==="build"){
-    renderBuild(area,q);
-  }
-
-  if(section.type==="conversation"){
-    renderConversation(area,q);
-  }
-
-  if(section.type==="typing"){
-    renderTyping(area,q);
-  }
-
-  if(section.type==="completion"){
-    renderCompletion(area,q);
-  }
-
-  if(section.type==="dictation"){
-    renderDictation(area,q);
-  }
-
-  if(section.type==="reconstruction"){
-    renderReconstruction(area,q);
-  }
-
-  if(section.type==="summary"){
-    renderSummary(area,q);
-  }
-}
-
-
-/* ========================= A. READ ALOUD ========================= */
-
-function renderRead(area,q){
-
-  const box=document.createElement("div");
-  box.className="question";
-
-  box.innerHTML=`
-    <div class="question-number">Read aloud for approximately 30 seconds.</div>
-    <div class="read-passage">${q}</div>
-    <div class="read-timer" id="readTimer"></div>
-    <div style="margin-top:18px">
-      <button class="btn" onclick="startSpeechRecognition()">🎙 Start Speaking</button>
-      <button class="btn secondary" onclick="stopSpeechRecognition()">Stop</button>
-    </div>
-    <div id="speechResult" style="margin-top:15px;color:#667085;font-size:13px"></div>
-  `;
-
-  area.appendChild(box);
-}
-
-
-/* ========================= B. REPEATS ========================= */
-
-function renderRepeat(area,q){
-
-  state.currentAudioText=q;
-
-  const box=document.createElement("div");
-  box.className="question";
-
-  box.innerHTML=`
-    <div class="audio-box">
-      <div class="speaker-icon">🔊</div>
-      <div class="audio-status">Listen carefully.</div>
-      <div class="listen-note">
-        The sentence will be spoken once. Repeat it after listening.
-      </div>
-      <button class="btn" style="margin-top:15px" onclick="speakCurrent()">Play Sentence</button>
-    </div>
-
-    <label><strong>Your response</strong></label>
-    <textarea id="answerInput"
-      placeholder="Speak the sentence, then use the microphone or type your response if speech recognition is unavailable."></textarea>
-
-    <div style="margin-top:10px">
-      <button class="btn secondary" onclick="startSpeechRecognition()">🎙 Use Microphone</button>
-      <button class="btn secondary" onclick="stopSpeechRecognition()">Stop</button>
-    </div>
-  `;
-
-  area.appendChild(box);
-
-  setTimeout(()=>speakCurrent(),500);
-}
-
-
-/* ========================= C. SENTENCE BUILDS ========================= */
-
-function renderBuild(area,q){
-
-  const box=document.createElement("div");
-  box.className="question";
-
-  box.innerHTML=`
-    <div class="question-number">Rearrange the three phrases into one correct sentence.</div>
-    <div class="read-passage">${shuffleCopy(q.parts).join(" / ")}</div>
-    <br>
-    <input id="answerInput" type="text" placeholder="Type the complete sentence">
-  `;
-
-  area.appendChild(box);
-}
-
-
-/* ========================= D. CONVERSATIONS ========================= */
-
-function renderConversation(area,q){
-
-  state.currentAudioText=q.dialogue;
-
-  const box=document.createElement("div");
-  box.className="question";
-
-  box.innerHTML=`
-    <div class="audio-box">
-      <div class="speaker-icon">🎧</div>
-      <div class="audio-status">Listen to the conversation.</div>
-      <button class="btn" onclick="speakCurrent()">Play Conversation</button>
-    </div>
-
-    <div class="question-text"><strong>Question:</strong> ${q.q}</div>
-
-    <textarea id="answerInput"
-      placeholder="Answer in a complete sentence."></textarea>
-  `;
-
-  area.appendChild(box);
-
-  setTimeout(()=>speakCurrent(),500);
-}
-
-
-/* ========================= E. TYPING ========================= */
-
-function renderTyping(area,q){
-
-  const box=document.createElement("div");
-  box.className="question";
-
-  box.innerHTML=`
-    <div class="question-number">Type the passage exactly as displayed.</div>
-    <div class="read-passage">${q}</div>
-
-    <textarea id="answerInput"
-      placeholder="Start typing here..."
-      oninput="updateWordCount()"></textarea>
-
-    <div class="word-count">
-      <span id="typingWords">0 words</span>
-      <span id="typingChars">0 characters</span>
-    </div>
-  `;
-
-  area.appendChild(box);
-}
-
-
-/* ========================= F. COMPLETION ========================= */
-
-function renderCompletion(area,q){
-
-  const box=document.createElement("div");
-  box.className="question";
-
-  box.innerHTML=`
-    <div class="question-text">${q.s}</div>
-    <input id="answerInput" type="text" placeholder="Enter the missing word">
-  `;
-
-  area.appendChild(box);
-}
-
-
-/* ========================= G. DICTATION ========================= */
-
-function renderDictation(area,q){
-
-  state.currentAudioText=q;
-
-  const box=document.createElement("div");
-  box.className="question";
-
-  box.innerHTML=`
-    <div class="audio-box">
-      <div class="speaker-icon">🎧</div>
-      <div class="audio-status">Listen and type exactly what you hear.</div>
-      <button class="btn" onclick="speakCurrent()">Play Dictation</button>
-    </div>
-
-    <textarea id="answerInput"
-      placeholder="Type the sentence you hear..."></textarea>
-  `;
-
-  area.appendChild(box);
-
-  setTimeout(()=>speakCurrent(),500);
-}
-
-
-/* ========================= H. RECONSTRUCTION ========================= */
-
-function renderReconstruction(area,q){
-
-  const box=document.createElement("div");
-  box.className="question";
-
-  box.innerHTML=`
-    <div id="reconstructionPassage" class="read-passage">${q.passage}</div>
-
-    <div style="margin:15px 0">
-      <button class="btn secondary" onclick="hidePassage()">Hide Passage</button>
-      <span id="memoryCountdown" style="margin-left:12px;font-weight:700;color:#2457d6"></span>
-    </div>
-
-    <textarea id="answerInput"
-      placeholder="Reconstruct the passage in your own words. Include the main points and important details."></textarea>
-
-    <div class="word-count">
-      <span id="reconWords">0 words</span>
-    </div>
-  `;
-
-  area.appendChild(box);
-
-  setTimeout(()=>{
-    startMemoryCountdown(30);
-  },100);
-}
-
-
-/* ========================= I. SUMMARY & OPINION ========================= */
-
-function renderSummary(area,q){
-
-  const box=document.createElement("div");
-  box.className="question";
-
-  box.innerHTML=`
-    <div class="read-passage">${q.passage}</div>
-
-    <h3>1. Author's opinion — 25 to 50 words</h3>
-    <textarea id="summaryInput"
-      placeholder="Write the author's opinion in your own words."
-      oninput="updateSummaryCount()"></textarea>
-    <div class="word-count">
-      <span id="summaryCount">0 words</span>
-      <span>Target: 25–50</span>
-    </div>
-
-    <h3 style="margin-top:25px">2. Your opinion — at least 50 words</h3>
-    <textarea id="opinionInput"
-      placeholder="State your opinion clearly and support it with logical reasons."
-      oninput="updateOpinionCount()"></textarea>
-    <div class="word-count">
-      <span id="opinionCount">0 words</span>
-      <span>Target: 50+ words</span>
-    </div>
-  `;
-
-  area.appendChild(box);
-}
-
-
-/* ========================= AUDIO ========================= */
-
-function speakText(text){
-  if(!("speechSynthesis" in window)){
-    alert("Speech synthesis is not supported by this browser.");
-    return;
-  }
-
-  window.speechSynthesis.cancel();
-
-  const utterance=new SpeechSynthesisUtterance(text);
-  utterance.rate=.9;
-  utterance.pitch=1;
-  utterance.volume=1;
-
-  window.speechSynthesis.speak(utterance);
-}
-
-function speakCurrent(){
-  speakText(state.currentAudioText);
-}
-
-function repeatCurrentAudio(){
-  if(state.currentAudioText)speakCurrent();
-}
-
-
-/* ========================= SPEECH RECOGNITION ========================= */
-
-function startSpeechRecognition(){
-
-  const SpeechRecognition=
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  if(!SpeechRecognition){
-    alert(
-      "Speech recognition is not available in this browser. " +
-      "You can type your response manually."
+    const matrix = Array.from(
+        { length: first.length + 1 },
+        () => Array(second.length + 1).fill(0)
     );
-    return;
-  }
 
-  if(state.recognitionActive)return;
+    for (let i = 1; i <= first.length; i++) {
 
-  const input=document.getElementById("answerInput");
+        for (let j = 1; j <= second.length; j++) {
 
-  state.speechRecognition=new SpeechRecognition();
-  state.speechRecognition.lang="en-US";
-  state.speechRecognition.interimResults=true;
-  state.speechRecognition.continuous=true;
+            if (first[i - 1] === second[j - 1]) {
 
-  state.recognitionActive=true;
+                matrix[i][j] = matrix[i - 1][j - 1] + 1;
 
-  const resultBox=document.getElementById("speechResult");
+            } else {
 
-  state.speechRecognition.onresult=function(event){
+                matrix[i][j] = Math.max(
+                    matrix[i - 1][j],
+                    matrix[i][j - 1]
+                );
 
-    let transcript="";
-
-    for(let i=event.resultIndex;i<event.results.length;i++){
-      transcript+=event.results[i][0].transcript+" ";
+            }
+        }
     }
 
-    transcript=transcript.trim();
+    return matrix[first.length][second.length] /
+        Math.max(first.length, second.length);
+}
 
-    if(input){
-      input.value=transcript;
+
+function keywordCoverage(text, keywords) {
+
+    const normalized = normalize(text);
+
+    if (!keywords.length) {
+        return 0;
     }
 
-    if(resultBox){
-      resultBox.textContent="Recognized speech: "+transcript;
+    let matches = 0;
+
+    keywords.forEach((keyword) => {
+
+        if (normalized.includes(normalize(keyword))) {
+            matches++;
+        }
+
+    });
+
+    return matches / keywords.length;
+}
+
+
+function shuffle(array) {
+
+    const result = [...array];
+
+    for (let i = result.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [result[i], result[j]] =
+            [result[j], result[i]];
     }
-  };
 
-  state.speechRecognition.onerror=function(){
-    state.recognitionActive=false;
-  };
-
-  state.speechRecognition.onend=function(){
-    state.recognitionActive=false;
-  };
-
-  state.speechRecognition.start();
-}
-
-function stopSpeechRecognition(){
-  if(state.speechRecognition){
-    try{state.speechRecognition.stop()}catch(e){}
-  }
-  state.recognitionActive=false;
+    return result;
 }
 
 
-/* ========================= MEMORY COUNTDOWN ========================= */
+/* ================================================================
+   START
+=============================================================================== */
 
-function startMemoryCountdown(seconds){
+function startFullAssessment() {
 
-  const el=document.getElementById("memoryCountdown");
-  if(!el)return;
+    state.mode = "full";
+    state.sectionIndex = 0;
+    state.questionIndex = 0;
+    state.answers = {};
+    state.questionResults = [];
+    state.sectionResults = [];
+    state.globalSeconds = 3000;
+    state.testStartTime = Date.now();
 
-  let n=seconds;
-  el.textContent=`Passage visible: ${n}s`;
+    hide("startScreen");
+    hide("practiceScreen");
+    hide("resultsScreen");
+    show("testScreen");
+    show("globalTimer");
 
-  const timer=setInterval(()=>{
-    n--;
+    startGlobalTimer();
+    renderQuestion();
+}
 
-    if(n<=0){
-      clearInterval(timer);
-      hidePassage();
-      el.textContent="Passage hidden — reconstruct from memory.";
-    }else{
-      el.textContent=`Passage visible: ${n}s`;
+
+function openPracticeSelection() {
+
+    hide("startScreen");
+    show("practiceScreen");
+
+    const grid = $("practiceGrid");
+
+    grid.innerHTML = "";
+
+    SECTIONS.forEach((section, index) => {
+
+        const card = document.createElement("div");
+
+        card.className = "practice-card";
+
+        card.innerHTML = `
+            <strong>Part ${section.id}: ${section.title}</strong>
+            <span>
+                ${section.questions.length} question${section.questions.length === 1 ? "" : "s"}
+                · ${formatTime(section.sectionTime)}
+            </span>
+        `;
+
+        card.addEventListener("click", () => {
+            startSectionPractice(index);
+        });
+
+        grid.appendChild(card);
+    });
+}
+
+
+function startSectionPractice(index) {
+
+    state.mode = "section";
+    state.sectionIndex = index;
+    state.questionIndex = 0;
+    state.answers = {};
+    state.questionResults = [];
+    state.sectionResults = [];
+    state.testStartTime = Date.now();
+
+    hide("practiceScreen");
+    hide("resultsScreen");
+    show("testScreen");
+    hide("globalTimer");
+
+    renderQuestion();
+}
+
+
+/* ================================================================
+   GLOBAL TIMER
+=============================================================================== */
+
+function startGlobalTimer() {
+
+    clearInterval(state.globalTimer);
+
+    $("globalTimer").textContent =
+        formatTime(state.globalSeconds);
+
+    state.globalTimer = setInterval(() => {
+
+        state.globalSeconds--;
+
+        $("globalTimer").textContent =
+            formatTime(state.globalSeconds);
+
+        $("globalTimer").classList.remove(
+            "warning",
+            "danger"
+        );
+
+        if (state.globalSeconds <= 600 &&
+            state.globalSeconds > 180) {
+
+            $("globalTimer").classList.add("warning");
+        }
+
+        if (state.globalSeconds <= 180) {
+
+            $("globalTimer").classList.add("danger");
+        }
+
+        if (state.globalSeconds <= 0) {
+
+            clearInterval(state.globalTimer);
+
+            finishAssessment(true);
+        }
+
+    }, 1000);
+}
+
+
+/* ================================================================
+   SECTION / QUESTION TIMER
+=============================================================================== */
+
+function startTimers(section) {
+
+    clearInterval(state.sectionTimer);
+    clearInterval(state.questionTimer);
+
+    state.sectionSeconds = section.sectionTime;
+
+    if (section.questionTime) {
+
+        state.questionSeconds = section.questionTime;
+
+        state.questionTimer = setInterval(() => {
+
+            state.questionSeconds--;
+
+            updateClock();
+
+            if (state.questionSeconds <= 0) {
+
+                clearInterval(state.questionTimer);
+
+                saveCurrentAnswer();
+
+                nextQuestion(true);
+            }
+
+        }, 1000);
+
+    } else {
+
+        state.sectionTimer = setInterval(() => {
+
+            state.sectionSeconds--;
+
+            updateClock();
+
+            if (state.sectionSeconds <= 0) {
+
+                clearInterval(state.sectionTimer);
+
+                saveCurrentAnswer();
+
+                moveToNextSection();
+            }
+
+        }, 1000);
     }
-  },1000);
-}
 
-function hidePassage(){
-  const p=document.getElementById("reconstructionPassage");
-  if(p)p.style.visibility="hidden";
+    updateClock();
 }
 
 
-/* ========================= INPUT COUNTERS ========================= */
+function updateClock() {
 
-function countWords(text){
-  return text.trim()?text.trim().split(/\s+/).length:0;
+    let seconds;
+
+    const section = SECTIONS[state.sectionIndex];
+
+    if (section.questionTime) {
+
+        seconds = state.questionSeconds;
+
+    } else {
+
+        seconds = state.sectionSeconds;
+    }
+
+    $("sectionClock").textContent =
+        formatTime(seconds);
+
+    $("sectionClock").style.background =
+        seconds <= 30 ? "#ffe8e8" :
+        seconds <= 90 ? "#fff4d9" :
+        "#eef6f1";
+
+    $("sectionClock").style.color =
+        seconds <= 30 ? "#b42318" :
+        seconds <= 90 ? "#996515" :
+        "#18864b";
 }
 
-function updateWordCount(){
-  const el=document.getElementById("answerInput");
-  if(!el)return;
 
-  const text=el.value;
+/* ================================================================
+   RENDER QUESTION
+=============================================================================== */
 
-  const words=document.getElementById("typingWords");
-  const chars=document.getElementById("typingChars");
+function renderQuestion() {
 
-  if(words)words.textContent=countWords(text)+" words";
-  if(chars)chars.textContent=text.length+" characters";
+    stopRecognition();
+
+    clearInterval(state.questionTimer);
+    clearInterval(state.sectionTimer);
+
+    const section = SECTIONS[state.sectionIndex];
+
+    const question = section.questions[state.questionIndex];
+
+    $("sectionKicker").textContent =
+        `Part ${section.id} · ${section.shortTitle}`;
+
+    $("sectionTitle").textContent =
+        section.title;
+
+    $("sectionDescription").textContent =
+        section.description;
+
+    $("progressSection").textContent =
+        state.mode === "full"
+            ? `Section ${state.sectionIndex + 1} of ${SECTIONS.length}`
+            : `Practice · Part ${section.id}`;
+
+    $("progressQuestion").textContent =
+        `Question ${state.questionIndex + 1} of ${section.questions.length}`;
+
+    $("headerQuestion").textContent =
+        `Part ${section.id} · Q${state.questionIndex + 1}`;
+
+    updateProgress();
+
+    $("previousBtn").disabled =
+        state.sectionIndex === 0 &&
+        state.questionIndex === 0;
+
+    const isLastQuestion =
+        state.questionIndex === section.questions.length - 1;
+
+    const isLastSection =
+        state.sectionIndex === SECTIONS.length - 1;
+
+    $("nextBtn").textContent =
+        isLastQuestion
+            ? (
+                state.mode === "full" && isLastSection
+                    ? "Finish"
+                    : "Next Section"
+            )
+            : "Next";
+
+    const audioNeeded =
+        section.type === "repeat" ||
+        section.type === "conversation" ||
+        section.type === "dictation";
+
+    $("replayBtn").classList.toggle(
+        "hidden",
+        !audioNeeded
+    );
+
+    renderQuestionType(section, question);
+
+    restoreAnswer();
+
+    startTimers(section);
 }
 
-function updateSummaryCount(){
-  const el=document.getElementById("summaryInput");
-  const counter=document.getElementById("summaryCount");
-  if(el&&counter)counter.textContent=countWords(el.value)+" words";
+
+function updateProgress() {
+
+    const totalQuestions =
+        SECTIONS.reduce(
+            (sum, section) =>
+                sum + section.questions.length,
+            0
+        );
+
+    let completed = 0;
+
+    for (
+        let i = 0;
+        i < state.sectionIndex;
+        i++
+    ) {
+        completed +=
+            SECTIONS[i].questions.length;
+    }
+
+    completed += state.questionIndex;
+
+    const percentage =
+        (completed / totalQuestions) * 100;
+
+    $("progressFill").style.width =
+        `${Math.min(100, percentage)}%`;
 }
 
-function updateOpinionCount(){
-  const el=document.getElementById("opinionInput");
-  const counter=document.getElementById("opinionCount");
-  if(el&&counter)counter.textContent=countWords(el.value)+" words";
+
+/* ================================================================
+   QUESTION RENDERERS
+=============================================================================== */
+
+function renderQuestionType(section, question) {
+
+    const area = $("questionArea");
+
+    area.innerHTML = "";
+
+    switch (section.type) {
+
+        case "read":
+            renderRead(area, question);
+            break;
+
+        case "repeat":
+            renderRepeat(area, question);
+            break;
+
+        case "build":
+            renderBuild(area, question);
+            break;
+
+        case "conversation":
+            renderConversation(area, question);
+            break;
+
+        case "typing":
+            renderTyping(area, question);
+            break;
+
+        case "completion":
+            renderCompletion(area, question);
+            break;
+
+        case "dictation":
+            renderDictation(area, question);
+            break;
+
+        case "reconstruction":
+            renderReconstruction(area, question);
+            break;
+
+        case "summary":
+            renderSummary(area, question);
+            break;
+    }
 }
 
 
-/* ========================= NAVIGATION ========================= */
+/* ================================================================
+   A. READ ALOUD
+=============================================================================== */
 
-function saveCurrentAnswer(){
+function renderRead(area, text) {
 
-  const section=sections[state.sectionIndex];
-  const q=section.data[state.questionIndex];
+    const card = document.createElement("div");
 
-  let value="";
+    card.className = "question-card";
 
-  if(section.type==="summary"){
-    value={
-      summary:document.getElementById("summaryInput")?.value||"",
-      opinion:document.getElementById("opinionInput")?.value||""
+    card.innerHTML = `
+        <div class="question-label">
+            Read aloud for approximately 30 seconds.
+        </div>
+
+        <div class="passage">
+            ${escapeHTML(text)}
+        </div>
+
+        <div style="margin-top:18px;">
+
+            <button id="startMicBtn" class="btn">
+                🎙 Start Speaking
+            </button>
+
+            <button id="stopMicBtn" class="btn secondary">
+                Stop
+            </button>
+
+        </div>
+
+        <div id="speechFeedback"
+             style="margin-top:15px;color:#667085;font-size:13px;">
+        </div>
+    `;
+
+    area.appendChild(card);
+
+    $("startMicBtn").addEventListener(
+        "click",
+        startRecognition
+    );
+
+    $("stopMicBtn").addEventListener(
+        "click",
+        stopRecognition
+    );
+}
+
+
+/* ================================================================
+   B. REPEATS
+=============================================================================== */
+
+function renderRepeat(area, text) {
+
+    state.currentAudio = text;
+
+    const card = document.createElement("div");
+
+    card.className = "question-card";
+
+    card.innerHTML = `
+        <div class="audio-card">
+
+            <div class="audio-icon">🔊</div>
+
+            <div class="audio-title">
+                Listen carefully.
+            </div>
+
+            <div class="audio-note">
+                Listen once and repeat the sentence word-for-word.
+            </div>
+
+            <button id="playBtn" class="btn">
+                Play Sentence
+            </button>
+
+        </div>
+
+        <textarea id="answerInput"
+                  class="answer-area"
+                  placeholder="Your recognized speech will appear here..."></textarea>
+
+        <div class="microphone-controls">
+
+            <button id="startMicBtn" class="btn secondary">
+                🎙 Microphone
+            </button>
+
+            <button id="stopMicBtn" class="btn secondary">
+                Stop
+            </button>
+
+        </div>
+    `;
+
+    area.appendChild(card);
+
+    $("playBtn").addEventListener(
+        "click",
+        playCurrentAudio
+    );
+
+    $("startMicBtn").addEventListener(
+        "click",
+        startRecognition
+    );
+
+    $("stopMicBtn").addEventListener(
+        "click",
+        stopRecognition
+    );
+
+    setTimeout(
+        playCurrentAudio,
+        500
+    );
+}
+
+
+/* ================================================================
+   C. SENTENCE BUILDS
+=============================================================================== */
+
+function renderBuild(area, question) {
+
+    const card = document.createElement("div");
+
+    card.className = "question-card";
+
+    const parts = shuffle(question.parts);
+
+    const phraseHTML = parts
+        .map(part => `
+            <div class="phrase">
+                ${escapeHTML(part)}
+            </div>
+        `)
+        .join("");
+
+    card.innerHTML = `
+        <div class="question-label">
+            Rearrange the phrases into one correct sentence.
+        </div>
+
+        <div class="phrase-container">
+            ${phraseHTML}
+        </div>
+
+        <input
+            id="answerInput"
+            class="text-input"
+            type="text"
+            placeholder="Type the complete sentence"
+        >
+    `;
+
+    area.appendChild(card);
+}
+
+
+/* ================================================================
+   D. CONVERSATION
+=============================================================================== */
+
+function renderConversation(area, question) {
+
+    state.currentAudio = question.dialogue;
+
+    const card = document.createElement("div");
+
+    card.className = "question-card";
+
+    card.innerHTML = `
+        <div class="audio-card">
+
+            <div class="audio-icon">🎧</div>
+
+            <div class="audio-title">
+                Listen to the conversation.
+            </div>
+
+            <div class="audio-note">
+                Listen carefully before answering.
+            </div>
+
+            <button id="playBtn" class="btn">
+                Play Conversation
+            </button>
+
+        </div>
+
+        <div class="question-text">
+            <strong>Question:</strong>
+            ${escapeHTML(question.question)}
+        </div>
+
+        <textarea
+            id="answerInput"
+            class="answer-area"
+            placeholder="Answer in a complete sentence."
+        ></textarea>
+    `;
+
+    area.appendChild(card);
+
+    $("playBtn").addEventListener(
+        "click",
+        playCurrentAudio
+    );
+
+    setTimeout(
+        playCurrentAudio,
+        500
+    );
+}
+
+
+/* ================================================================
+   E. TYPING
+=============================================================================== */
+
+function renderTyping(area, text) {
+
+    const card = document.createElement("div");
+
+    card.className = "question-card";
+
+    card.innerHTML = `
+        <div class="question-label">
+            Type the passage exactly as displayed.
+        </div>
+
+        <div class="passage">
+            ${escapeHTML(text)}
+        </div>
+
+        <textarea
+            id="answerInput"
+            class="answer-area"
+            placeholder="Start typing..."
+        ></textarea>
+
+        <div class="word-counter">
+
+            <span id="typingWords">
+                0 words
+            </span>
+
+            <span id="typingCharacters">
+                0 characters
+            </span>
+
+        </div>
+    `;
+
+    area.appendChild(card);
+
+    $("answerInput").addEventListener(
+        "input",
+        () => {
+
+            const value =
+                $("answerInput").value;
+
+            $("typingWords").textContent =
+                `${wordCount(value)} words`;
+
+            $("typingCharacters").textContent =
+                `${value.length} characters`;
+        }
+    );
+}
+
+
+/* ================================================================
+   F. SENTENCE COMPLETION
+=============================================================================== */
+
+function renderCompletion(area, question) {
+
+    const card = document.createElement("div");
+
+    card.className = "question-card";
+
+    card.innerHTML = `
+        <div class="question-text">
+            ${escapeHTML(question.sentence)}
+        </div>
+
+        <input
+            id="answerInput"
+            class="text-input"
+            type="text"
+            placeholder="Enter the missing word"
+            autocomplete="off"
+        >
+    `;
+
+    area.appendChild(card);
+}
+
+
+/* ================================================================
+   G. DICTATION
+=============================================================================== */
+
+function renderDictation(area, text) {
+
+    state.currentAudio = text;
+
+    const card = document.createElement("div");
+
+    card.className = "question-card";
+
+    card.innerHTML = `
+        <div class="audio-card">
+
+            <div class="audio-icon">🎧</div>
+
+            <div class="audio-title">
+                Listen and type what you hear.
+            </div>
+
+            <div class="audio-note">
+                Focus on wording, spelling and punctuation.
+            </div>
+
+            <button id="playBtn" class="btn">
+                Play Dictation
+            </button>
+
+        </div>
+
+        <textarea
+            id="answerInput"
+            class="answer-area"
+            placeholder="Type the sentence you hear..."
+        ></textarea>
+    `;
+
+    area.appendChild(card);
+
+    $("playBtn").addEventListener(
+        "click",
+        playCurrentAudio
+    );
+
+    setTimeout(
+        playCurrentAudio,
+        500
+    );
+}
+
+
+/* ================================================================
+   H. PASSAGE RECONSTRUCTION
+=============================================================================== */
+
+function renderReconstruction(area, question) {
+
+    const card = document.createElement("div");
+
+    card.className = "question-card";
+
+    card.innerHTML = `
+        <div id="memoryPassage" class="passage">
+            ${escapeHTML(question.passage)}
+        </div>
+
+        <div style="margin:15px 0;">
+
+            <span id="memoryStatus"
+                  style="font-weight:700;color:#2457d6;">
+                Passage visible
+            </span>
+
+        </div>
+
+        <textarea
+            id="answerInput"
+            class="answer-area"
+            placeholder="Reconstruct the passage in your own words..."
+        ></textarea>
+
+        <div class="word-counter">
+            <span id="reconstructionWords">
+                0 words
+            </span>
+        </div>
+    `;
+
+    area.appendChild(card);
+
+    $("answerInput").addEventListener(
+        "input",
+        () => {
+
+            $("reconstructionWords").textContent =
+                `${wordCount($("answerInput").value)} words`;
+        }
+    );
+
+    startMemoryTimer();
+}
+
+
+function startMemoryTimer() {
+
+    clearInterval(state.memoryTimer);
+
+    let seconds = 30;
+
+    $("memoryStatus").textContent =
+        `Passage visible — ${seconds}s`;
+
+    state.memoryTimer = setInterval(() => {
+
+        seconds--;
+
+        if (seconds <= 0) {
+
+            clearInterval(state.memoryTimer);
+
+            $("memoryPassage").style.visibility =
+                "hidden";
+
+            $("memoryStatus").textContent =
+                "Passage hidden — reconstruct from memory.";
+
+            return;
+        }
+
+        $("memoryStatus").textContent =
+            `Passage visible — ${seconds}s`;
+
+    }, 1000);
+}
+
+
+/* ================================================================
+   I. SUMMARY AND OPINION
+=============================================================================== */
+
+function renderSummary(area, question) {
+
+    const card = document.createElement("div");
+
+    card.className = "question-card";
+
+    card.innerHTML = `
+
+        <div class="passage">
+            ${escapeHTML(question.passage)}
+        </div>
+
+        <h3>
+            1. Author's opinion — 25 to 50 words
+        </h3>
+
+        <textarea
+            id="summaryInput"
+            class="answer-area"
+            placeholder="Write the author's opinion in your own words..."
+        ></textarea>
+
+        <div class="word-counter">
+
+            <span id="summaryWords">
+                0 words
+            </span>
+
+            <span>
+                Target: 25–50
+            </span>
+
+        </div>
+
+        <h3 style="margin-top:25px;">
+            2. Your opinion — at least 50 words
+        </h3>
+
+        <textarea
+            id="opinionInput"
+            class="answer-area"
+            placeholder="State your opinion clearly and support it with logical reasons..."
+        ></textarea>
+
+        <div class="word-counter">
+
+            <span id="opinionWords">
+                0 words
+            </span>
+
+            <span>
+                Target: 50+
+            </span>
+
+        </div>
+    `;
+
+    area.appendChild(card);
+
+    $("summaryInput").addEventListener(
+        "input",
+        () => {
+
+            $("summaryWords").textContent =
+                `${wordCount($("summaryInput").value)} words`;
+        }
+    );
+
+    $("opinionInput").addEventListener(
+        "input",
+        () => {
+
+            $("opinionWords").textContent =
+                `${wordCount($("opinionInput").value)} words`;
+        }
+    );
+}
+
+
+/* ================================================================
+   AUDIO
+=============================================================================== */
+
+function speak(text) {
+
+    if (!("speechSynthesis" in window)) {
+
+        alert(
+            "Speech synthesis is not supported by this browser."
+        );
+
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utterance =
+        new SpeechSynthesisUtterance(text);
+
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    window.speechSynthesis.speak(
+        utterance
+    );
+}
+
+
+function playCurrentAudio() {
+
+    if (state.currentAudio) {
+        speak(state.currentAudio);
+    }
+}
+
+
+/* ================================================================
+   SPEECH RECOGNITION
+=============================================================================== */
+
+function startRecognition() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+
+        alert(
+            "Speech recognition is not available in this browser. " +
+            "Chrome or Edge on desktop is recommended."
+        );
+
+        return;
+    }
+
+    if (state.recognitionRunning) {
+        return;
+    }
+
+    const input =
+        $("answerInput");
+
+    const feedback =
+        $("speechFeedback");
+
+    const recognition =
+        new SpeechRecognition();
+
+    state.recognition = recognition;
+    state.recognitionRunning = true;
+
+    recognition.lang = "en-US";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event) => {
+
+        let transcript = "";
+
+        for (
+            let i = event.resultIndex;
+            i < event.results.length;
+            i++
+        ) {
+
+            transcript +=
+                event.results[i][0].transcript + " ";
+        }
+
+        transcript =
+            transcript.trim();
+
+        if (input) {
+            input.value = transcript;
+        }
+
+        if (feedback) {
+
+            feedback.textContent =
+                `Recognized speech: ${transcript}`;
+        }
     };
-  }else{
-    const input=document.getElementById("answerInput");
-    if(input)value=input.value;
-  }
 
-  state.answers[`${state.sectionIndex}-${state.questionIndex}`]=value;
-}
+    recognition.onerror = () => {
 
-function restoreCurrentAnswer(){
+        state.recognitionRunning = false;
+    };
 
-  const key=`${state.sectionIndex}-${state.questionIndex}`;
-  const value=state.answers[key];
+    recognition.onend = () => {
 
-  if(value===undefined)return;
+        state.recognitionRunning = false;
+    };
 
-  const section=sections[state.sectionIndex];
+    try {
 
-  if(section.type==="summary"){
-    const s=document.getElementById("summaryInput");
-    const o=document.getElementById("opinionInput");
+        recognition.start();
 
-    if(s)s.value=value.summary||"";
-    if(o)o.value=value.opinion||"";
+    } catch (error) {
 
-    updateSummaryCount();
-    updateOpinionCount();
-  }else{
-    const input=document.getElementById("answerInput");
-    if(input)input.value=value;
-  }
-}
-
-function previousQuestion(){
-
-  saveCurrentAnswer();
-
-  if(state.questionIndex>0){
-    state.questionIndex--;
-  }else if(state.sectionIndex>0){
-    state.sectionIndex--;
-    state.questionIndex=sections[state.sectionIndex].questions-1;
-  }
-
-  renderQuestion();
-  restoreCurrentAnswer();
-}
-
-function nextQuestion(auto=false){
-
-  if(!auto)saveCurrentAnswer();
-
-  stopSpeechRecognition();
-  window.speechSynthesis?.cancel();
-
-  const section=sections[state.sectionIndex];
-
-  if(state.questionIndex<section.questions-1){
-    state.questionIndex++;
-    renderQuestion();
-    restoreCurrentAnswer();
-    return;
-  }
-
-  if(state.mode==="section"){
-    finishAssessment(false);
-    return;
-  }
-
-  if(state.sectionIndex<sections.length-1){
-    state.sectionIndex++;
-    state.questionIndex=0;
-    renderQuestion();
-    return;
-  }
-
-  finishAssessment(false);
-}
-
-
-/* ========================= EVALUATION ========================= */
-
-function normalize(text){
-  return (text||"")
-    .toLowerCase()
-    .replace(/[’‘]/g,"'")
-    .replace(/[.,!?;:"“”()[\]{}]/g," ")
-    .replace(/\s+/g," ")
-    .trim();
-}
-
-function similarity(a,b){
-
-  a=normalize(a).split(" ").filter(Boolean);
-  b=normalize(b).split(" ").filter(Boolean);
-
-  if(!a.length&&!b.length)return 1;
-  if(!a.length||!b.length)return 0;
-
-  const dp=Array.from({length:a.length+1},
-    ()=>Array(b.length+1).fill(0));
-
-  for(let i=1;i<=a.length;i++){
-    for(let j=1;j<=b.length;j++){
-      if(a[i-1]===b[j-1]){
-        dp[i][j]=dp[i-1][j-1]+1;
-      }else{
-        dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
-      }
+        state.recognitionRunning = false;
     }
-  }
-
-  return dp[a.length][b.length]/Math.max(a.length,b.length);
 }
 
-function keywordCoverage(text,keywords){
-  const n=normalize(text);
-  if(!keywords.length)return 0;
 
-  let hit=0;
+function stopRecognition() {
 
-  keywords.forEach(k=>{
-    if(n.includes(normalize(k)))hit++;
-  });
+    if (state.recognition) {
 
-  return hit/keywords.length;
+        try {
+            state.recognition.stop();
+        } catch (error) {
+            // Ignore stop errors.
+        }
+    }
+
+    state.recognitionRunning = false;
 }
 
-function evaluateQuestion(section,q,answer){
 
-  let score=0;
-  let detail="";
+/* ================================================================
+   SAVE / RESTORE
+=============================================================================== */
 
-  if(section.type==="read"){
-    const s=similarity(q,answer);
-    score=Math.round(s*100);
-    detail="Speech transcript similarity";
-  }
+function saveCurrentAnswer() {
 
-  else if(section.type==="repeat"){
-    score=Math.round(similarity(q,answer)*100);
-    detail="Word-level repetition accuracy";
-  }
+    const section =
+        SECTIONS[state.sectionIndex];
 
-  else if(section.type==="build"){
-    score=Math.round(similarity(q.answer,answer)*100);
-    detail="Sentence construction accuracy";
-  }
+    const key =
+        `${state.sectionIndex}-${state.questionIndex}`;
 
-  else if(section.type==="conversation"){
-    score=Math.round(similarity(q.a,answer)*100);
-    detail="Comprehension answer similarity";
-  }
+    let value = "";
 
-  else if(section.type==="typing"){
-    const s=similarity(q,answer);
-    const words=countWords(answer);
-    const secondsUsed=60-Math.max(0,state.sectionSeconds);
-    const minutes=Math.max(secondsUsed/60,.1);
-    const wpm=Math.round(words/minutes);
+    if (section.type === "summary") {
 
-    score=Math.round(s*100);
-    detail=`Accuracy ${score}% · approximately ${wpm} WPM`;
-  }
+        value = {
 
-  else if(section.type==="completion"){
-    score=normalize(answer)===normalize(q.a)?100:similarity(q.a,answer)>=.8?80:0;
-    detail="Contextual word accuracy";
-  }
+            summary:
+                $("summaryInput")
+                    ? $("summaryInput").value
+                    : "",
 
-  else if(section.type==="dictation"){
-    score=Math.round(similarity(q,answer)*100);
-    detail="Dictation word accuracy";
-  }
+            opinion:
+                $("opinionInput")
+                    ? $("opinionInput").value
+                    : ""
+        };
 
-  else if(section.type==="reconstruction"){
-    const coverage=keywordCoverage(answer,q.keywords);
-    const lengthFactor=Math.min(1,countWords(answer)/25);
-    score=Math.round((coverage*.75+lengthFactor*.25)*100);
-    detail=`Key-point coverage ${Math.round(coverage*100)}%`;
-  }
+    } else {
 
-  else if(section.type==="summary"){
-    const summary=answer?.summary||"";
-    const opinion=answer?.opinion||"";
+        const input =
+            $("answerInput");
 
-    const summaryWords=countWords(summary);
-    const opinionWords=countWords(opinion);
+        if (input) {
+            value = input.value;
+        }
+    }
 
-    const summaryLength=
-      summaryWords>=25&&summaryWords<=50 ? 1 :
-      summaryWords>=15&&summaryWords<=60 ? .7 : .4;
+    state.answers[key] = value;
+}
 
-    const opinionLength=opinionWords>=50?1:
-      opinionWords>=35?.7:.4;
 
-    const keyCoverage=keywordCoverage(summary,q.keywords);
+function restoreAnswer() {
 
-    score=Math.round(
-      ((summaryLength*.35)+(opinionLength*.25)+(keyCoverage*.4))*100
+    const key =
+        `${state.sectionIndex}-${state.questionIndex}`;
+
+    if (!(key in state.answers)) {
+        return;
+    }
+
+    const section =
+        SECTIONS[state.sectionIndex];
+
+    const saved =
+        state.answers[key];
+
+    if (section.type === "summary") {
+
+        if ($("summaryInput")) {
+            $("summaryInput").value =
+                saved.summary || "";
+        }
+
+        if ($("opinionInput")) {
+            $("opinionInput").value =
+                saved.opinion || "";
+        }
+
+        updateSummaryCounters();
+
+    } else {
+
+        if ($("answerInput")) {
+            $("answerInput").value =
+                saved;
+        }
+    }
+}
+
+
+function updateSummaryCounters() {
+
+    if ($("summaryInput")) {
+
+        $("summaryWords").textContent =
+            `${wordCount($("summaryInput").value)} words`;
+    }
+
+    if ($("opinionInput")) {
+
+        $("opinionWords").textContent =
+            `${wordCount($("opinionInput").value)} words`;
+    }
+}
+
+
+/* ================================================================
+   NAVIGATION
+=============================================================================== */
+
+function previousQuestion() {
+
+    saveCurrentAnswer();
+
+    if (state.questionIndex > 0) {
+
+        state.questionIndex--;
+
+    } else if (state.sectionIndex > 0) {
+
+        state.sectionIndex--;
+
+        state.questionIndex =
+            SECTIONS[state.sectionIndex]
+                .questions.length - 1;
+
+    } else {
+
+        return;
+    }
+
+    renderQuestion();
+}
+
+
+function nextQuestion(autoAdvance = false) {
+
+    if (!autoAdvance) {
+        saveCurrentAnswer();
+    }
+
+    stopRecognition();
+
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
+
+    clearInterval(state.questionTimer);
+    clearInterval(state.memoryTimer);
+
+    const section =
+        SECTIONS[state.sectionIndex];
+
+    const lastQuestion =
+        state.questionIndex >=
+        section.questions.length - 1;
+
+    if (!lastQuestion) {
+
+        state.questionIndex++;
+
+        renderQuestion();
+
+        return;
+    }
+
+    moveToNextSection();
+}
+
+
+function moveToNextSection() {
+
+    saveCurrentAnswer();
+
+    const isLastSection =
+        state.sectionIndex >=
+        SECTIONS.length - 1;
+
+    if (state.mode === "section" || isLastSection) {
+
+        finishAssessment(false);
+
+        return;
+    }
+
+    state.sectionIndex++;
+    state.questionIndex = 0;
+
+    renderQuestion();
+}
+
+
+/* ================================================================
+   EVALUATION
+=============================================================================== */
+
+function evaluateQuestion(section, question, answer) {
+
+    let score = 0;
+    let detail = "";
+
+    if (section.type === "read") {
+
+        score =
+            Math.round(
+                similarity(question, answer) * 100
+            );
+
+        detail =
+            "Speech transcript similarity";
+    }
+
+    else if (section.type === "repeat") {
+
+        score =
+            Math.round(
+                similarity(question, answer) * 100
+            );
+
+        detail =
+            "Word-level repetition accuracy";
+    }
+
+    else if (section.type === "build") {
+
+        score =
+            Math.round(
+                similarity(question.answer, answer) * 100
+            );
+
+        detail =
+            "Sentence construction similarity";
+    }
+
+    else if (section.type === "conversation") {
+
+        score =
+            Math.round(
+                similarity(question.answer, answer) * 100
+            );
+
+        detail =
+            "Comprehension answer similarity";
+    }
+
+    else if (section.type === "typing") {
+
+        const accuracy =
+            similarity(question, answer);
+
+        const words =
+            wordCount(answer);
+
+        const elapsed =
+            Math.max(
+                1,
+                60 - state.questionSeconds
+            );
+
+        const minutes =
+            elapsed / 60;
+
+        const wpm =
+            Math.round(words / minutes);
+
+        score =
+            Math.round(accuracy * 100);
+
+        detail =
+            `Accuracy ${score}% · Approx. ${wpm} WPM`;
+    }
+
+    else if (section.type === "completion") {
+
+        const expected =
+            normalize(question.answer);
+
+        const actual =
+            normalize(answer);
+
+        score =
+            actual === expected
+                ? 100
+                : similarity(expected, actual) >= 0.75
+                    ? 75
+                    : 0;
+
+        detail =
+            "Contextual word accuracy";
+    }
+
+    else if (section.type === "dictation") {
+
+        score =
+            Math.round(
+                similarity(question, answer) * 100
+            );
+
+        detail =
+            "Dictation word accuracy";
+    }
+
+    else if (section.type === "reconstruction") {
+
+        const coverage =
+            keywordCoverage(
+                answer,
+                question.keywords
+            );
+
+        const length =
+            Math.min(
+                1,
+                wordCount(answer) / 25
+            );
+
+        score =
+            Math.round(
+                (
+                    coverage * 0.75 +
+                    length * 0.25
+                ) * 100
+            );
+
+        detail =
+            `Key-point coverage ${Math.round(coverage * 100)}%`;
+    }
+
+    else if (section.type === "summary") {
+
+        const summary =
+            answer.summary || "";
+
+        const opinion =
+            answer.opinion || "";
+
+        const summaryWords =
+            wordCount(summary);
+
+        const opinionWords =
+            wordCount(opinion);
+
+        const summaryLength =
+            summaryWords >= 25 &&
+            summaryWords <= 50
+                ? 1
+                : summaryWords >= 15 &&
+                  summaryWords <= 60
+                    ? 0.7
+                    : 0.4;
+
+        const opinionLength =
+            opinionWords >= 50
+                ? 1
+                : opinionWords >= 35
+                    ? 0.7
+                    : 0.4;
+
+        const coverage =
+            keywordCoverage(
+                summary,
+                question.keywords
+            );
+
+        score =
+            Math.round(
+                (
+                    summaryLength * 0.35 +
+                    opinionLength * 0.25 +
+                    coverage * 0.40
+                ) * 100
+            );
+
+        detail =
+            `Summary ${summaryWords} words · ` +
+            `Opinion ${opinionWords} words · ` +
+            `Key-point coverage ${Math.round(coverage * 100)}%`;
+    }
+
+    score =
+        Math.max(
+            0,
+            Math.min(100, score)
+        );
+
+    return {
+        score,
+        detail
+    };
+}
+
+
+/* ================================================================
+   FINISH
+=============================================================================== */
+
+function finishAssessment(timeExpired) {
+
+    saveCurrentAnswer();
+
+    clearInterval(state.globalTimer);
+    clearInterval(state.sectionTimer);
+    clearInterval(state.questionTimer);
+    clearInterval(state.memoryTimer);
+
+    stopRecognition();
+
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
+
+    const sectionsToEvaluate =
+        state.mode === "section"
+            ? [SECTIONS[state.sectionIndex]]
+            : SECTIONS;
+
+    state.questionResults = [];
+    state.sectionResults = [];
+
+    let totalScore = 0;
+    let totalQuestions = 0;
+
+    sectionsToEvaluate.forEach(section => {
+
+        const actualIndex =
+            SECTIONS.indexOf(section);
+
+        let sectionTotal = 0;
+
+        section.questions.forEach(
+            (question, questionIndex) => {
+
+                const key =
+                    `${actualIndex}-${questionIndex}`;
+
+                const answer =
+                    state.answers[key] !== undefined
+                        ? state.answers[key]
+                        : "";
+
+                const evaluation =
+                    evaluateQuestion(
+                        section,
+                        question,
+                        answer
+                    );
+
+                state.questionResults.push({
+
+                    section:
+                        section.title,
+
+                    sectionId:
+                        section.id,
+
+                    question:
+                        questionIndex + 1,
+
+                    score:
+                        evaluation.score,
+
+                    detail:
+                        evaluation.detail,
+
+                    answer
+                });
+
+                sectionTotal +=
+                    evaluation.score;
+
+                totalScore +=
+                    evaluation.score;
+
+                totalQuestions++;
+            }
+        );
+
+        state.sectionResults.push({
+
+            title:
+                section.title,
+
+            score:
+                Math.round(
+                    sectionTotal /
+                    section.questions.length
+                ),
+
+            questions:
+                section.questions.length
+        });
+    });
+
+    const overall =
+        Math.round(
+            totalScore /
+            Math.max(1, totalQuestions)
+        );
+
+    hide("testScreen");
+    hide("practiceScreen");
+    show("resultsScreen");
+
+    $("overallScore").textContent =
+        `${overall}%`;
+
+    $("resultMessage").textContent =
+        timeExpired
+            ? "The 50-minute assessment timer expired. Your recorded responses have been evaluated."
+            : "Your practice assessment has been evaluated locally.";
+
+    renderResults();
+}
+
+
+/* ================================================================
+   RESULTS
+=============================================================================== */
+
+function renderResults() {
+
+    const grid =
+        $("resultsGrid");
+
+    grid.innerHTML = "";
+
+    state.sectionResults.forEach(result => {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "result-card";
+
+        const badgeClass =
+            result.score >= 80
+                ? "good"
+                : result.score >= 60
+                    ? "average"
+                    : "low";
+
+        const label =
+            result.score >= 80
+                ? "Strong"
+                : result.score >= 60
+                    ? "Developing"
+                    : "Needs Practice";
+
+        card.innerHTML = `
+
+            <h3>
+                ${escapeHTML(result.title)}
+            </h3>
+
+            <div class="result-score">
+                ${result.score}%
+            </div>
+
+            <span class="badge ${badgeClass}">
+                ${label}
+            </span>
+
+            <div class="result-meta">
+                ${result.questions}
+                question${result.questions === 1 ? "" : "s"}
+            </div>
+        `;
+
+        grid.appendChild(card);
+    });
+
+    renderAnalysis();
+    renderReview();
+}
+
+
+function renderAnalysis() {
+
+    const strong =
+        state.sectionResults
+            .filter(item => item.score >= 80);
+
+    const developing =
+        state.sectionResults
+            .filter(item =>
+                item.score >= 60 &&
+                item.score < 80
+            );
+
+    const weak =
+        state.sectionResults
+            .filter(item =>
+                item.score < 60
+            );
+
+    let html = "";
+
+    if (strong.length) {
+
+        html += `
+            <strong>Higher-scoring practice areas:</strong>
+            ${strong.map(x => escapeHTML(x.title)).join(", ")}.
+            <br><br>
+        `;
+    }
+
+    if (developing.length) {
+
+        html += `
+            <strong>Developing areas:</strong>
+            ${developing.map(x => escapeHTML(x.title)).join(", ")}.
+            <br><br>
+        `;
+    }
+
+    if (weak.length) {
+
+        html += `
+            <strong>Areas needing more practice:</strong>
+            ${weak.map(x => escapeHTML(x.title)).join(", ")}.
+            <br><br>
+        `;
+    }
+
+    html += `
+        These are simulator-generated practice indicators.
+        They should not be interpreted as an official CE assessment score.
+    `;
+
+    $("analysis").innerHTML =
+        html;
+}
+
+
+function renderReview() {
+
+    const list =
+        $("reviewList");
+
+    list.innerHTML = "";
+
+    state.questionResults.forEach(result => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "review-item";
+
+        const badgeClass =
+            result.score >= 80
+                ? "good"
+                : result.score >= 60
+                    ? "average"
+                    : "low";
+
+        item.innerHTML = `
+
+            <div class="review-top">
+
+                <strong>
+                    Part ${escapeHTML(result.sectionId)}
+                    · Q${result.question}
+                </strong>
+
+                <span class="badge ${badgeClass}">
+                    ${result.score}%
+                </span>
+
+            </div>
+
+            <div class="review-detail">
+                ${escapeHTML(result.detail)}
+            </div>
+        `;
+
+        list.appendChild(item);
+    });
+}
+
+
+/* ================================================================
+   DOWNLOAD
+=============================================================================== */
+
+function downloadResults() {
+
+    const lines = [];
+
+    lines.push(
+        "CE BASELINE ASSESSMENT PRACTICE RESULTS"
     );
 
-    detail=
-      `Summary ${summaryWords} words · Opinion ${opinionWords} words · `+
-      `Key-point coverage ${Math.round(keyCoverage*100)}%`;
-  }
+    lines.push(
+        "========================================="
+    );
 
-  return {
-    score:Math.max(0,Math.min(100,score)),
-    detail
-  };
-}
+    lines.push("");
 
+    lines.push(
+        `Overall Score: ${$("overallScore").textContent}`
+    );
 
-/* ========================= FINISH ========================= */
+    lines.push("");
 
-function finishAssessment(timeExpired){
+    state.sectionResults.forEach(result => {
 
-  saveCurrentAnswer();
-
-  clearInterval(globalInterval);
-  clearInterval(sectionInterval);
-
-  stopSpeechRecognition();
-  window.speechSynthesis?.cancel();
-
-  const selectedSections=
-    state.mode==="section"
-    ? [sections[state.sectionIndex]]
-    : sections;
-
-  const resultRows=[];
-  let totalScore=0;
-  let totalQuestions=0;
-
-  selectedSections.forEach((section)=>{
-
-    const actualIndex=sections.indexOf(section);
-    let sectionScore=0;
-    let count=0;
-
-    section.data.forEach((q,i)=>{
-
-      const key=`${actualIndex}-${i}`;
-      const answer=state.answers[key] ?? "";
-
-      const result=evaluateQuestion(section,q,answer);
-
-      resultRows.push({
-        section:section.title,
-        index:i+1,
-        score:result.score,
-        detail:result.detail,
-        answer
-      });
-
-      sectionScore+=result.score;
-      count++;
-      totalScore+=result.score;
-      totalQuestions++;
+        lines.push(
+            `${result.title}: ${result.score}%`
+        );
     });
 
-    state.results.push({
-      title:section.title,
-      score:Math.round(sectionScore/count),
-      questions:count
+    lines.push("");
+
+    lines.push(
+        "Question Details"
+    );
+
+    lines.push(
+        "----------------"
+    );
+
+    state.questionResults.forEach(result => {
+
+        lines.push(
+            `Part ${result.sectionId} Q${result.question}: ` +
+            `${result.score}% — ${result.detail}`
+        );
     });
-  });
 
-  const overall=Math.round(totalScore/Math.max(totalQuestions,1));
+    lines.push("");
 
-  document.getElementById("testScreen").classList.add("hidden");
-  document.getElementById("resultsScreen").classList.remove("hidden");
+    lines.push(
+        "This is an independent practice score and does not reproduce any proprietary assessment scoring algorithm."
+    );
 
-  document.getElementById("overallScore").textContent=overall+"%";
+    const blob =
+        new Blob(
+            [lines.join("\n")],
+            { type: "text/plain;charset=utf-8" }
+        );
 
-  document.getElementById("overallMessage").textContent=
-    timeExpired
-    ? "The assessment timer expired. Your completed responses have been evaluated."
-    : "Your practice assessment has been evaluated locally.";
+    const url =
+        URL.createObjectURL(blob);
 
-  renderResults(resultRows,overall);
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+        "CE-Practice-Assessment-Results.txt";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(url);
 }
 
 
-/* ========================= RESULTS ========================= */
+/* ================================================================
+   HTML ESCAPING
+=============================================================================== */
 
-function renderResults(rows,overall){
+function escapeHTML(value) {
 
-  const grid=document.getElementById("resultGrid");
-  grid.innerHTML="";
-
-  state.results.forEach(r=>{
-
-    const card=document.createElement("div");
-    card.className="result-card";
-
-    const cls=r.score>=80?"good":r.score>=60?"mid":"low";
-
-    card.innerHTML=`
-      <h3>${r.title}</h3>
-      <div class="result-score">${r.score}%</div>
-      <span class="badge ${cls}">
-        ${r.score>=80?"Strong":r.score>=60?"Developing":"Needs Practice"}
-      </span>
-      <div class="result-detail">${r.questions} question${r.questions>1?"s":""}</div>
-    `;
-
-    grid.appendChild(card);
-  });
-
-  const weak=state.results
-    .filter(x=>x.score<70)
-    .sort((a,b)=>a.score-b.score);
-
-  const strong=state.results
-    .filter(x=>x.score>=80)
-    .sort((a,b)=>b.score-a.score);
-
-  let analysis="";
-
-  if(strong.length){
-    analysis+=
-      `<strong>Higher-performing areas:</strong> `+
-      strong.map(x=>x.title).join(", ")+".<br><br>`;
-  }
-
-  if(weak.length){
-    analysis+=
-      `<strong>Areas requiring additional practice:</strong> `+
-      weak.map(x=>x.title).join(", ")+".<br><br>`;
-  }
-
-  analysis+=
-    "Use these results as a practice diagnostic rather than an official assessment score. "+
-    "The supplied assessment guide describes the skills and tasks but does not provide "+
-    "the proprietary numerical scoring formula.";
-
-  document.getElementById("analysisBox").innerHTML=analysis;
-
-  const review=document.getElementById("reviewBox");
-  review.innerHTML="";
-
-  rows.forEach(r=>{
-
-    const row=document.createElement("div");
-    row.className="review-row";
-
-    const cls=r.score>=80?"good":r.score>=60?"mid":"low";
-
-    row.innerHTML=`
-      <div style="display:flex;justify-content:space-between;gap:10px">
-        <strong>${r.section} — Q${r.index}</strong>
-        <span class="badge ${cls}">${r.score}%</span>
-      </div>
-      <div style="font-size:13px;color:#667085;margin-top:5px">${r.detail}</div>
-    `;
-
-    review.appendChild(row);
-  });
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
-/* ========================= DOWNLOAD ========================= */
+/* ================================================================
+   EVENT LISTENERS
+=============================================================================== */
 
-function downloadResults(){
-
-  const lines=[];
-
-  lines.push("CE BASELINE PRACTICE ASSESSMENT");
-  lines.push("================================");
-  lines.push("");
-  lines.push("Overall Score: "+
-    document.getElementById("overallScore").textContent);
-  lines.push("");
-
-  state.results.forEach(r=>{
-    lines.push(`${r.title}: ${r.score}%`);
-  });
-
-  lines.push("");
-  lines.push("Note:");
-  lines.push(
-    "This is an independent practice score and does not reproduce any proprietary assessment scoring algorithm."
-  );
-
-  const blob=new Blob([lines.join("\n")],{type:"text/plain"});
-  const url=URL.createObjectURL(blob);
-
-  const a=document.createElement("a");
-  a.href=url;
-  a.download="CE-Practice-Assessment-Results.txt";
-  a.click();
-
-  URL.revokeObjectURL(url);
-}
+$("startFullBtn")
+    .addEventListener(
+        "click",
+        startFullAssessment
+    );
 
 
-/* ========================= UTILITY ========================= */
-
-function shuffleCopy(arr){
-  const copy=[...arr];
-
-  for(let i=copy.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [copy[i],copy[j]]=[copy[j],copy[i]];
-  }
-
-  return copy;
-}
+$("startPracticeBtn")
+    .addEventListener(
+        "click",
+        openPracticeSelection
+    );
 
 
-/* ========================= KEYBOARD SUPPORT ========================= */
+$("practiceBackBtn")
+    .addEventListener(
+        "click",
+        () => {
 
-document.addEventListener("keydown",e=>{
-
-  if(document.getElementById("testScreen").classList.contains("hidden"))return;
-
-  if(e.ctrlKey||e.altKey||e.metaKey)return;
-
-  if(e.key==="Enter" && !e.shiftKey){
-    const active=document.activeElement;
-
-    if(active && active.tagName==="TEXTAREA")return;
-
-    e.preventDefault();
-    nextQuestion();
-  }
-});
+            hide("practiceScreen");
+            show("startScreen");
+        }
+    );
 
 
-/* ========================= PAGE SAFETY ========================= */
+$("previousBtn")
+    .addEventListener(
+        "click",
+        previousQuestion
+    );
 
-window.addEventListener("beforeunload",function(e){
 
-  if(!document.getElementById("testScreen").classList.contains("hidden")){
-    e.preventDefault();
-    e.returnValue="";
-  }
-});
+$("nextBtn")
+    .addEventListener(
+        "click",
+        () => nextQuestion(false)
+    );
+
+
+$("replayBtn")
+    .addEventListener(
+        "click",
+        playCurrentAudio
+    );
+
+
+$("restartBtn")
+    .addEventListener(
+        "click",
+        () => {
+
+            location.reload();
+        }
+    );
+
+
+$("downloadBtn")
+    .addEventListener(
+        "click",
+        downloadResults
+    );
+
+
+/* ================================================================
+   PAGE SAFETY
+=============================================================================== */
+
+window.addEventListener(
+    "beforeunload",
+    event => {
+
+        if (!$("testScreen").classList.contains("hidden")) {
+
+            event.preventDefault();
+
+            event.returnValue = "";
+        }
+    }
+);
 
 </script>
+
 </body>
 </html>
